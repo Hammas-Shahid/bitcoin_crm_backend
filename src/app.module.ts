@@ -6,6 +6,8 @@ import { TypeOrmModule, TypeOrmModuleOptions } from '@nestjs/typeorm';
 import { UsersModule } from './users/users.module';
 import { ormConfig } from './ormconfig';
 import { AuthModule } from './auth/auth.module';
+import { APP_INTERCEPTOR } from '@nestjs/core';
+import { AuthInterceptor } from './auth/interceptors/auth.interceptor';
 
 @Module({
   imports: [

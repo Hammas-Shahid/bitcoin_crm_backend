@@ -8,6 +8,7 @@ import { User } from 'src/users/entities/user.entity';
 import { EmailNotFoundException } from './exceptions/email.exception';
 import { InvalidPasswordException } from './exceptions/password.exception';
 import { UserStatusException } from './exceptions/userStatus.exception';
+import { BypassJwtAuth } from './bypass-jwt-auth.decorator';
 
 @Injectable()
 export class AuthService {
@@ -27,13 +28,12 @@ export class AuthService {
       );
       throw new InvalidPasswordException();
     }
-    console.log(user);
-
     if (!user.is_active) throw new UserStatusException();
     const { password, ...result } = user;
     return result;
   }
 
+  @BypassJwtAuth()
   async login(user: Partial<User>) {
     await this.validateUser(user.email, user.password);
     const payload: JwtPayload = { email: user.email, id: user.id };

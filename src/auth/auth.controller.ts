@@ -11,11 +11,12 @@ import { CreateUserDto } from '../users/dto/create-user.dto';
 import { JwtAuthGuard } from './jwt-auth.guard';
 import { LocalAuthGuard } from './local-auth.guard';
 
+@UseGuards(JwtAuthGuard)
 @Controller('auth')
 export class AuthController {
   constructor(private authService: AuthService) {}
 
-  // @UseGuards(LocalAuthGuard)
+  @UseGuards(LocalAuthGuard)
   @Post('login')
   async login(@Request() req: any) {
     return this.authService.login(req.body);

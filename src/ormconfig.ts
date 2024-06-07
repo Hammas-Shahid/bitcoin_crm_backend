@@ -13,8 +13,8 @@ export const ormConfig = {
   database: process.env.DB_NAME,
   logging: false,
   synchronize: false,
-  entities: [path.join(__dirname, '**', '*.entity.{ts,js}')],
-  migrations: [path.join(__dirname, '**', 'migrations', '*.{ts,js}')],
+  entities: [path.join(__dirname, '**', '*.entity.js')],
+  migrations: [path.join(__dirname, '**', 'migrations', '*.js')],
 };
 
 export default new DataSource(ormConfig as DataSourceOptions);

@@ -11,10 +11,8 @@ import {
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
-import { LocalAuthGuard } from 'src/auth/local-auth.guard';
+import { BypassJwtAuth } from 'src/auth/bypass-jwt-auth.decorator';
 
-@UseGuards(JwtAuthGuard)
 @Controller('users')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
@@ -24,6 +22,7 @@ export class UsersController {
     return this.usersService.create(createUserDto);
   }
 
+  @BypassJwtAuth()
   @Get()
   findAll() {
     return this.usersService.findAll();
