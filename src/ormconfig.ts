@@ -11,10 +11,10 @@ export const ormConfig = {
   username: process.env.DB_USERNAME,
   password: process.env.DB_PASSWORD,
   database: process.env.DB_NAME,
-  logging: false,
+  logging: true,
   synchronize: false,
-  entities: [path.join(__dirname, '**', '*.entity.js')],
-  migrations: [path.join(__dirname, '**', 'migrations', '*.js')],
+  entities: ['dist/**/*.entity.js'],
+  migrations: ['dist/**/migrations/*.js'],
 };
 
 export default new DataSource(ormConfig as DataSourceOptions);
