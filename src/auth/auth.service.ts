@@ -33,10 +33,12 @@ export class AuthService {
     return result;
   }
 
-  @BypassJwtAuth()
   async login(user: Partial<User>) {
-    await this.validateUser(user.email, user.password);
-    const payload: JwtPayload = { email: user.email, id: user.id };
+    const validatedUser = await this.validateUser(user.email, user.password);
+    const payload: JwtPayload = {
+      email: validatedUser.email,
+      id: validatedUser.id,
+    };
     return {
       access_token: this.jwtService.sign(payload),
     };

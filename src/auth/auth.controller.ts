@@ -10,12 +10,13 @@ import { AuthService } from './auth.service';
 import { CreateUserDto } from '../users/dto/create-user.dto';
 import { JwtAuthGuard } from './jwt-auth.guard';
 import { LocalAuthGuard } from './local-auth.guard';
+import { BypassJwtAuth } from './bypass-jwt-auth.decorator';
 
-@UseGuards(JwtAuthGuard)
 @Controller('auth')
 export class AuthController {
   constructor(private authService: AuthService) {}
 
+  @BypassJwtAuth()
   @UseGuards(LocalAuthGuard)
   @Post('login')
   async login(@Request() req: any) {
@@ -27,7 +28,6 @@ export class AuthController {
     return this.authService.register(createUserDto);
   }
 
-  @UseGuards(JwtAuthGuard) // This is an example of a protected endpoint
   @Get('profile')
   getProfile(@Request() req) {
     return req.user;
