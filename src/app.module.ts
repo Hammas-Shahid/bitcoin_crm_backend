@@ -5,6 +5,7 @@ import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule, TypeOrmModuleOptions } from '@nestjs/typeorm';
 import { UsersModule } from './users/users.module';
 import { ormConfig } from './ormconfig';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [
@@ -12,8 +13,15 @@ import { ormConfig } from './ormconfig';
     TypeOrmModule.forRoot(ormConfig as TypeOrmModuleOptions),
     TypeOrmModule.forFeature(),
     UsersModule,
+    AuthModule,
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [
+    AppService,
+    {
+      provide: APP_INTERCEPTOR,
+      useClass: AuthInterceptor,
+    },
+  ],
 })
 export class AppModule {}

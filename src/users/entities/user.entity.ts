@@ -1,6 +1,5 @@
-import { Column, Entity } from 'typeorm';
+import { BeforeInsert, Column, Entity } from 'typeorm';
 import { BasicEntity } from '../../shared/entities/base-entity';
-import { IsEmail } from 'class-validator';
 
 @Entity()
 export class User extends BasicEntity {
@@ -15,6 +14,12 @@ export class User extends BasicEntity {
 
   @Column()
   role: UserRoles;
+
+  @Column({ default: true })
+  is_active: boolean;
+
+  @Column({ default: 0 })
+  failed_attempts: number;
 }
 
 export enum UserRoles {
