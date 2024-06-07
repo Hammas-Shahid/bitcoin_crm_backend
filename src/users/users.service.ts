@@ -3,7 +3,7 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import * as bcrypt from 'bcrypt';
-import { User } from './entities/user.entity';
+import { User, UserRoles } from './entities/user.entity';
 import { ILike, Repository } from 'typeorm';
 
 @Injectable()
@@ -70,7 +70,14 @@ export class UsersService {
     await this.userRepository.update(id, { is_active });
   }
 
-  async update(id: number, updateUserDto: UpdateUserDto) {
+  async update(
+    id: number,
+    updateUserDto: UpdateUserDto,
+    currentUser: Partial<User>,
+  ) {
+    if (currentUser.role !== UserRoles.Admin && updateUserDto.password) {
+      delete updateUserDto.password;
+    }
     const user = await this.userRepository.preload({ id, ...updateUserDto });
 
     if (!user) {
