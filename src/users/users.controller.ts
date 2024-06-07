@@ -7,19 +7,25 @@ import {
   Param,
   Delete,
   UseGuards,
+  Req,
+  UnauthorizedException,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { BypassJwtAuth } from 'src/auth/bypass-jwt-auth.decorator';
 import { LocalAuthGuard } from 'src/auth/local-auth.guard';
+import { UserRoles } from './entities/user.entity';
 
 @Controller('users')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
   @Post()
-  create(@Body() createUserDto: CreateUserDto) {
+  create(@Req() req: any, @Body() createUserDto: CreateUserDto) {
+    if (req.body.user.role !== UserRoles.Admin) {
+      throw new UnauthorizedException();
+    }
     return this.usersService.create(createUserDto);
   }
 

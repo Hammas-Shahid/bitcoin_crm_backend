@@ -35,6 +35,7 @@ export class UsersService {
         email: true,
         password: true,
         is_active: true,
+        role: true,
         failed_attempts: true,
       },
     });
@@ -70,7 +71,13 @@ export class UsersService {
   }
 
   async update(id: number, updateUserDto: UpdateUserDto) {
-    return await this.userRepository.save(updateUserDto);
+    const user = await this.userRepository.preload({ id, ...updateUserDto });
+
+    if (!user) {
+      throw new Error('User not found');
+    }
+
+    return await this.userRepository.save(user);
   }
 
   remove(id: number) {
