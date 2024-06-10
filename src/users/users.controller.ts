@@ -58,6 +58,17 @@ export class UsersController {
     );
   }
 
+  @Post('filtered-users')
+  getFilteredUsers(
+    @Body() queryFilters: { searchString: string; page: number; limit: number },
+  ) {
+    return this.usersService.getFilteredUsers(
+      queryFilters.searchString,
+      queryFilters.page,
+      queryFilters.limit,
+    );
+  }
+
   @Post('email-exists')
   userWithEmailExists(@Body() body: { email: string }) {
     return this.usersService.userWithEmailExists(body.email);

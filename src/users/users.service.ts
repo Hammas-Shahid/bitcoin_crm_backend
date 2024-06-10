@@ -23,6 +23,20 @@ export class UsersService {
     return await this.userRepository.find();
   }
 
+  /* Page Number Starts At 0 */
+  async getFilteredUsers(searchString: string, page: number, limit: number) {
+    const results = await this.userRepository.findAndCount({
+      where: [
+        { name: ILike(`%${searchString}%`) },
+        { email: ILike(`%${searchString}%`) },
+        { role: ILike(`%${searchString}%`) as any },
+      ],
+      take: limit,
+      skip: page * limit,
+    });
+    return { count: results[1], results: results[0] };
+  }
+
   async findOne(id: number) {
     return await this.userRepository.findOne({ where: { id } });
   }
