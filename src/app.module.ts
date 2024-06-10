@@ -8,6 +8,7 @@ import { ormConfig } from './ormconfig';
 import { AuthModule } from './auth/auth.module';
 import { APP_INTERCEPTOR } from '@nestjs/core';
 import { AuthInterceptor } from './auth/interceptors/auth.interceptor';
+import { BusinessTypesModule } from './business-types/business-types.module';
 
 @Module({
   imports: [
@@ -16,6 +17,7 @@ import { AuthInterceptor } from './auth/interceptors/auth.interceptor';
     TypeOrmModule.forFeature(),
     UsersModule,
     AuthModule,
+    BusinessTypesModule,
   ],
   controllers: [AppController],
   providers: [
