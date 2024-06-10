@@ -9,6 +9,7 @@ import { AuthModule } from './auth/auth.module';
 import { APP_INTERCEPTOR } from '@nestjs/core';
 import { AuthInterceptor } from './auth/interceptors/auth.interceptor';
 import { BusinessTypesModule } from './business-types/business-types.module';
+import { StatesModule } from './states/states.module';
 
 @Module({
   imports: [
@@ -18,6 +19,7 @@ import { BusinessTypesModule } from './business-types/business-types.module';
     UsersModule,
     AuthModule,
     BusinessTypesModule,
+    StatesModule,
   ],
   controllers: [AppController],
   providers: [
