@@ -4,6 +4,7 @@ import { ILike, Repository } from 'typeorm';
 import { CreateBusinessTypeDto } from './dto/create-business-type.dto';
 import { UpdateBusinessTypeDto } from './dto/update-business-type.dto';
 import { BusinessType } from './entities/business-type.entity';
+import { User } from 'src/users/entities/user.entity';
 
 @Injectable()
 export class BusinessTypesService {
@@ -12,7 +13,11 @@ export class BusinessTypesService {
     private businessTypesRepository: Repository<BusinessType>,
   ) {}
 
-  async create(createBusinessTypeDto: CreateBusinessTypeDto) {
+  async create(
+    createBusinessTypeDto: CreateBusinessTypeDto,
+    currentUser: User,
+  ) {
+    createBusinessTypeDto['created_by'] = currentUser.id;
     return await this.businessTypesRepository.save(createBusinessTypeDto);
   }
 

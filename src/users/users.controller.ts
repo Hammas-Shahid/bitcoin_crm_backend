@@ -26,7 +26,7 @@ export class UsersController {
     if (req.body.user.role !== UserRoles.Admin) {
       throw new UnauthorizedException();
     }
-    return this.usersService.create(createUserDto);
+    return this.usersService.create(createUserDto, req.user);
   }
 
   @Get()

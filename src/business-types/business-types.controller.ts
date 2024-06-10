@@ -6,6 +6,7 @@ import {
   Patch,
   Param,
   Delete,
+  Req,
 } from '@nestjs/common';
 import { BusinessTypesService } from './business-types.service';
 import { CreateBusinessTypeDto } from './dto/create-business-type.dto';
@@ -16,8 +17,11 @@ export class BusinessTypesController {
   constructor(private readonly businessTypesService: BusinessTypesService) {}
 
   @Post()
-  create(@Body() createBusinessTypeDto: CreateBusinessTypeDto) {
-    return this.businessTypesService.create(createBusinessTypeDto);
+  create(
+    @Body() createBusinessTypeDto: CreateBusinessTypeDto,
+    @Req() req: any,
+  ) {
+    return this.businessTypesService.create(createBusinessTypeDto, req.user);
   }
 
   @Get()

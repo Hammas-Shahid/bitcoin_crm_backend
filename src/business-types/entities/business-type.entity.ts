@@ -3,6 +3,6 @@ import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity()
 export class BusinessType extends BasicEntity {
-  @Column()
+  @Column({ unique: true })
   name: string;
 }

@@ -12,8 +12,9 @@ export class UsersService {
     @InjectRepository(User) private userRepository: Repository<User>,
   ) {}
 
-  async create(createUserDto: CreateUserDto) {
+  async create(createUserDto: CreateUserDto, currentUser: User) {
     createUserDto.password = await bcrypt.hash(createUserDto.password, 10);
+    createUserDto['created_by'] = currentUser.id;
     let savedUser = await this.userRepository.save(createUserDto);
     delete savedUser.password;
     return savedUser;
