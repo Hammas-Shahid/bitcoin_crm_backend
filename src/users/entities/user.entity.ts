@@ -1,5 +1,6 @@
-import { BeforeInsert, Column, Entity } from 'typeorm';
+import { BeforeInsert, Column, Entity, OneToMany } from 'typeorm';
 import { BasicEntity } from '../../shared/entities/base-entity';
+import { Lead } from 'src/leads/entities/lead.entity';
 
 @Entity()
 export class User extends BasicEntity {
@@ -20,6 +21,9 @@ export class User extends BasicEntity {
 
   @Column({ default: 0 })
   failed_attempts: number;
+
+  @OneToMany(() => Lead, (lead) => lead.assigneeId)
+  lead: Lead;
 }
 
 export enum UserRoles {
