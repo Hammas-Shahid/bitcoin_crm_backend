@@ -40,4 +40,9 @@ export class LeadsController {
   remove(@Param('id') id: string) {
     return this.leadsService.remove(+id);
   }
+
+  @Post('address-exists')
+  addressExists(@Body() body: { address: string }) {
+    return this.leadsService.addressExists(body.address);
+  }
 }

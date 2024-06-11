@@ -30,4 +30,3 @@ export enum UserRoles {
   Admin = 'Admin',
   Agent = 'Agent',
 }
-1;

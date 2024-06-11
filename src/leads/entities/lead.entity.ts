@@ -1,8 +1,15 @@
 import { BusinessType } from 'src/business-types/entities/business-type.entity';
+import { Contact } from 'src/contacts/entities/contact.entity';
 import { BasicEntity } from 'src/shared/entities/base-entity';
 import { Status } from 'src/statuses/entities/status.entity';
 import { User } from 'src/users/entities/user.entity';
-import { Entity, Column, PrimaryGeneratedColumn, ManyToOne } from 'typeorm';
+import {
+  Entity,
+  Column,
+  PrimaryGeneratedColumn,
+  ManyToOne,
+  ManyToMany,
+} from 'typeorm';
 
 @Entity()
 export class Lead extends BasicEntity {
@@ -49,4 +56,7 @@ export class Lead extends BasicEntity {
 
   @ManyToOne(() => Status, { nullable: false })
   status: Status;
+
+  @ManyToMany(() => Contact, (contact) => contact.leads)
+  contacts: Contact[];
 }

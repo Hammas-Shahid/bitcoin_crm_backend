@@ -13,6 +13,7 @@ import { StatesModule } from './states/states.module';
 import { StatusesModule } from './statuses/statuses.module';
 import { DispositionsModule } from './dispositions/dispositions.module';
 import { LeadsModule } from './leads/leads.module';
+import { ContactsModule } from './contacts/contacts.module';
 
 @Module({
   imports: [
@@ -26,6 +27,7 @@ import { LeadsModule } from './leads/leads.module';
     StatusesModule,
     DispositionsModule,
     LeadsModule,
+    ContactsModule,
   ],
   controllers: [AppController],
   providers: [
