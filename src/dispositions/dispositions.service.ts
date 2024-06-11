@@ -1,6 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { ILike, Repository } from 'typeorm';
 import { CreateDispositionDto } from './dto/create-disposition.dto';
 import { UpdateDispositionDto } from './dto/update-disposition.dto';
 import { Disposition } from './entities/disposition.entity';
@@ -32,6 +32,12 @@ export class DispositionsService {
       throw new NotFoundException(`Disposition with ID ${id} not found`);
     }
     return disposition;
+  }
+
+  async dispositionExists(name: string) {
+    return await this.dispositionRepository.exists({
+      where: { name: ILike(name) },
+    });
   }
 
   async update(id: number, updateDispositionDto: UpdateDispositionDto) {

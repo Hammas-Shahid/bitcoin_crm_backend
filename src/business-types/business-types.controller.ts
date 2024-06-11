@@ -40,6 +40,11 @@ export class BusinessTypesController {
     );
   }
 
+  @Post('business-type-exists')
+  businessTypeExists(@Body() body: { name: string }) {
+    return this.businessTypesService.businessTypeExists(body.name);
+  }
+
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.businessTypesService.findOne(+id);

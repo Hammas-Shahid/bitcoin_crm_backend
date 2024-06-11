@@ -1,6 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { ILike, Repository } from 'typeorm';
 import { CreateStatusDto } from './dto/create-status.dto';
 import { UpdateStatusDto } from './dto/update-status.dto';
 import { Status } from './entities/status.entity';
@@ -41,6 +41,12 @@ export class StatusesService {
       throw new NotFoundException(`Status with ID ${id} not found`);
     }
     return status;
+  }
+
+  async statusExists(name: string) {
+    return await this.statusRepository.exists({
+      where: { name: ILike(name) },
+    });
   }
 
   async update(id: number, updateStatusDto: UpdateStatusDto) {

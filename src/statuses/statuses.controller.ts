@@ -33,6 +33,11 @@ export class StatusesController {
     return this.statusService.findOne(+id);
   }
 
+  @Post('status-exists')
+  statusExists(@Body() body: { name: string }) {
+    return this.statusService.statusExists(body.name);
+  }
+
   @Patch(':id')
   update(
     @Param('id') id: string,

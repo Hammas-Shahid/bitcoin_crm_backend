@@ -33,6 +33,11 @@ export class DispositionsController {
     return this.dispositionService.findOne(+id);
   }
 
+  @Post('disposition-exists')
+  dispositionExists(@Body() body: { name: string }) {
+    return this.dispositionService.dispositionExists(body.name);
+  }
+
   @Patch(':id')
   update(
     @Param('id') id: string,

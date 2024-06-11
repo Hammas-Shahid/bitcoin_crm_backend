@@ -43,6 +43,12 @@ export class BusinessTypesService {
     return businessType;
   }
 
+  async businessTypeExists(name: string) {
+    return await this.businessTypesRepository.exists({
+      where: { name: ILike(name) },
+    });
+  }
+
   async update(id: number, updateBusinessTypeDto: UpdateBusinessTypeDto) {
     await this.businessTypesRepository.update(id, updateBusinessTypeDto);
     const updatedBusinessType = await this.businessTypesRepository.findOneBy({
