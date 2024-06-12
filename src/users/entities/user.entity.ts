@@ -2,6 +2,8 @@ import { BeforeInsert, Column, Entity, OneToMany } from 'typeorm';
 import { BasicEntity } from '../../shared/entities/base-entity';
 import { Lead } from 'src/leads/entities/lead.entity';
 import { Disposition } from 'src/dispositions/entities/disposition.entity';
+import { BusinessType } from 'src/business-types/entities/business-type.entity';
+import { Status } from 'src/statuses/entities/status.entity';
 
 @Entity()
 export class User extends BasicEntity {
@@ -28,6 +30,12 @@ export class User extends BasicEntity {
 
   @OneToMany(() => Disposition, (disposition) => disposition.created_by)
   dispositions: Disposition[];
+
+  @OneToMany(() => BusinessType, (businessType) => businessType.created_by)
+  businessTypes: BusinessType[];
+
+  @OneToMany(() => Status, (status) => status.created_by)
+  statuses: Status[];
 }
 
 export enum UserRoles {
