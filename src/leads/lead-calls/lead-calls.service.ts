@@ -1,11 +1,25 @@
 import { Injectable } from '@nestjs/common';
 import { CreateLeadCallDto } from './dto/create-lead-call.dto';
 import { UpdateLeadCallDto } from './dto/update-lead-call.dto';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { LeadCall } from './entities/lead-call.entity';
+import { User } from 'src/users/entities/user.entity';
 
 @Injectable()
 export class LeadCallsService {
-  create(createLeadCallDto: CreateLeadCallDto) {
-    return 'This action adds a new leadCall';
+  constructor(
+    @InjectRepository(LeadCall)
+    private leadCallRepository: Repository<LeadCall>,
+  ) {}
+
+  async create(createLeadCallDto: CreateLeadCallDto, currentUser: User) {
+    console.log(createLeadCallDto);
+
+    return await this.leadCallRepository.save({
+      ...createLeadCallDto,
+      created_by: currentUser.id,
+    });
   }
 
   findAll() {
@@ -16,11 +30,11 @@ export class LeadCallsService {
     return `This action returns a #${id} leadCall`;
   }
 
-  update(id: number, updateLeadCallDto: UpdateLeadCallDto) {
-    return `This action updates a #${id} leadCall`;
+  async update(id: number, updateLeadCallDto: UpdateLeadCallDto) {
+    return await this.leadCallRepository.save({ ...updateLeadCallDto, id });
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} leadCall`;
+  async remove(id: number) {
+    return await this.leadCallRepository.delete(id);
   }
 }

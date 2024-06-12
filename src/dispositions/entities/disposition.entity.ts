@@ -8,7 +8,7 @@ export class Disposition extends BasicEntity {
   @Column({ unique: true })
   name: string;
 
-  @OneToMany(() => LeadCall, (leaadCall) => leaadCall.dispositionId)
+  @OneToMany(() => LeadCall, (leadCall) => leadCall.disposition)
   leadCalls: LeadCall[];
 
   @ManyToOne(() => User, (user) => user.dispositions, {

@@ -33,7 +33,7 @@ export class BusinessTypesController {
   getFilteredBusinessTypes(
     @Body() queryFilters: { searchString: string; page: number; limit: number },
   ) {
-    return this.businessTypesService.getFilteredUsers(
+    return this.businessTypesService.getFilteredBusinessTypes(
       queryFilters.searchString,
       queryFilters.page,
       queryFilters.limit,

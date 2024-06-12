@@ -5,6 +5,10 @@ import { State } from './entities/state.entity';
 import { CreateStateDto } from './dto/create-state.dto';
 import { UpdateStateDto } from './dto/update-state.dto';
 import { User } from 'src/users/entities/user.entity';
+import {
+  rawQuerySearchInRemovedSpecCharsString,
+  removeSpecialCharsFromString,
+} from 'src/shared/entities/functions/utils';
 
 @Injectable()
 export class StatesService {
@@ -29,7 +33,11 @@ export class StatesService {
   /* Page Number Starts At 0 */
   async getFilteredstates(searchString: string, page: number, limit: number) {
     const results = await this.stateRepository.findAndCount({
-      where: [{ name: ILike(`%${searchString}%`) }],
+      where: [
+        {
+          name: ILike(`%${searchString}%`),
+        },
+      ],
       take: limit,
       skip: page * limit,
     });

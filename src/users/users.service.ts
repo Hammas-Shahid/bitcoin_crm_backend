@@ -59,7 +59,9 @@ export class UsersService {
   }
 
   async userWithEmailExists(email: string) {
-    return await this.userRepository.exists({ where: { email } });
+    return await this.userRepository.exists({
+      where: { email: ILike(`%${email}%`) },
+    });
   }
 
   async findOneForLogin(id: number): Promise<User | undefined> {

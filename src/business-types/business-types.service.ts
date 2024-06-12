@@ -5,6 +5,10 @@ import { CreateBusinessTypeDto } from './dto/create-business-type.dto';
 import { UpdateBusinessTypeDto } from './dto/update-business-type.dto';
 import { BusinessType } from './entities/business-type.entity';
 import { User } from 'src/users/entities/user.entity';
+import {
+  rawQuerySearchInRemovedSpecCharsString,
+  removeSpecialCharsFromString,
+} from 'src/shared/entities/functions/utils';
 
 @Injectable()
 export class BusinessTypesService {
@@ -26,7 +30,11 @@ export class BusinessTypesService {
   }
 
   /* Page Number Starts At 0 */
-  async getFilteredUsers(searchString: string, page: number, limit: number) {
+  async getFilteredBusinessTypes(
+    searchString: string,
+    page: number,
+    limit: number,
+  ) {
     const results = await this.businessTypesRepository.findAndCount({
       where: [{ name: ILike(`%${searchString}%`) }],
       take: limit,
@@ -45,7 +53,11 @@ export class BusinessTypesService {
 
   async businessTypeExists(name: string) {
     return await this.businessTypesRepository.exists({
-      where: { name: ILike(name) },
+      where: {
+        name: rawQuerySearchInRemovedSpecCharsString(
+          removeSpecialCharsFromString(name),
+        ),
+      },
     });
   }
 

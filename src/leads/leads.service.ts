@@ -7,6 +7,10 @@ import { UpdateLeadDto } from './dto/update-lead.dto';
 import { User } from 'src/users/entities/user.entity';
 import { ContactsService } from 'src/contacts/contacts.service';
 import { LeadContactsService } from './lead-contacts/lead-contacts.service';
+import {
+  rawQuerySearchInRemovedSpecCharsString,
+  removeSpecialCharsFromString,
+} from 'src/shared/entities/functions/utils';
 
 @Injectable()
 export class LeadsService {
@@ -95,7 +99,12 @@ export class LeadsService {
 
   async getPaginatedLeads(page: number, limit: number) {
     const results = await this.leadRepository.findAndCount({
-      relations: { status: true, businessType: true, assignee: true },
+      relations: {
+        status: true,
+        businessType: true,
+        assignee: true,
+        leadCalls: true,
+      },
       take: limit,
       skip: page * limit,
       order: { created_at: 'DESC' },
@@ -128,7 +137,13 @@ export class LeadsService {
 
   async addressExists(address: string) {
     address = address.trim();
-    return await this.leadRepository.findOne({ where: { address } });
+    return await this.leadRepository.findOne({
+      where: {
+        address: rawQuerySearchInRemovedSpecCharsString(
+          removeSpecialCharsFromString(address),
+        ),
+      },
+    });
   }
 
   async addContact(leadId: number, contactId: number) {
