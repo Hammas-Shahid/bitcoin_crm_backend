@@ -41,7 +41,11 @@ export class DispositionsService {
     pageLimit: number,
   ) {
     const results = await this.dispositionRepository.findAndCount({
-      where: { name: ILike(`%${searchString}%`) },
+      where: [
+        { name: ILike(`%${searchString}%`) },
+        { user: { name: ILike(`%${searchString}%`) } },
+      ],
+      relations: { user: true },
       skip: pageIndex * pageLimit,
       take: pageLimit,
       order: { id: 'DESC' },

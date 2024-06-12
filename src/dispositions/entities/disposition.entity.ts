@@ -1,6 +1,7 @@
 import { LeadCall } from 'src/leads/lead-calls/entities/lead-call.entity';
 import { BasicEntity } from 'src/shared/entities/base-entity';
-import { Entity, Column, OneToMany } from 'typeorm';
+import { User } from 'src/users/entities/user.entity';
+import { Entity, Column, OneToMany, ManyToOne, JoinColumn } from 'typeorm';
 
 @Entity('dispositions')
 export class Disposition extends BasicEntity {
@@ -9,4 +10,11 @@ export class Disposition extends BasicEntity {
 
   @OneToMany(() => LeadCall, (leaadCall) => leaadCall.dispositionId)
   leadCalls: LeadCall[];
+
+  @ManyToOne(() => User, (user) => user.dispositions, {
+    onDelete: 'CASCADE',
+    onUpdate: 'CASCADE',
+  })
+  @JoinColumn({ name: 'created_by' })
+  user: User;
 }
