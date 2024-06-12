@@ -38,6 +38,17 @@ export class DispositionsController {
     return this.dispositionService.dispositionExists(body.name);
   }
 
+  @Post('filtered-dispositions')
+  getFilteredDispositions(
+    @Body() queryFilters: { searchString: string; page: number; limit: number },
+  ) {
+    return this.dispositionService.getFilteredDispositions(
+      queryFilters.searchString,
+      queryFilters.page,
+      queryFilters.limit,
+    );
+  }
+
   @Patch(':id')
   update(
     @Param('id') id: string,

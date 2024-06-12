@@ -32,6 +32,7 @@ export class UsersService {
         { email: ILike(`%${searchString}%`) },
         { role: ILike(`%${searchString}%`) as any },
       ],
+      order: { created_at: 'DESC' },
       take: limit,
       skip: page * limit,
     });
