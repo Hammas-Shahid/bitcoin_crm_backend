@@ -13,6 +13,7 @@ import {
 } from 'typeorm';
 import { LeadContact } from '../lead-contacts/entities/lead-contact.entity';
 import { LeadCall } from '../lead-calls/entities/lead-call.entity';
+import { LeadCallBack } from '../lead-callbacks/entities/lead-callback.entity';
 
 @Entity()
 export class Lead extends BasicEntity {
@@ -50,6 +51,9 @@ export class Lead extends BasicEntity {
 
   @OneToMany(() => LeadCall, (leadCall) => leadCall.lead)
   leadCalls: LeadCall[];
+
+  @OneToMany(() => LeadCallBack, (leadCallBack) => leadCallBack.lead)
+  leadCallBacks: LeadCallBack[];
 
   @ManyToOne(() => BusinessType, { nullable: false })
   businessType: BusinessType;
