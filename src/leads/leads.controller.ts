@@ -32,6 +32,21 @@ export class LeadsController {
     return this.leadsService.findOne(+id);
   }
 
+  @Post('paginated-leads')
+  getPaginatedLeads(@Body() body: { pageIndex: number; limit: number }) {
+    return this.leadsService.getPaginatedLeads(body.pageIndex, body.limit);
+  }
+
+  @Patch(':leadId/assignee/:assigneeId')
+  updateLeadAssignee(
+    @Param('leadId') leadId: string,
+    @Param('assigneeId') assigneeId: string,
+  ) {
+    console.log(leadId, assigneeId);
+
+    return this.leadsService.updateLeadAssignee(+leadId, +assigneeId);
+  }
+
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateLeadDto: UpdateLeadDto) {
     return this.leadsService.update(+id, updateLeadDto);

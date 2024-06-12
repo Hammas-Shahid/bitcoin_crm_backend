@@ -12,6 +12,7 @@ import {
   OneToMany,
 } from 'typeorm';
 import { LeadContact } from '../lead-contacts/entities/lead-contact.entity';
+import { LeadCall } from '../lead-calls/entities/lead-call.entity';
 
 @Entity()
 export class Lead extends BasicEntity {
@@ -46,6 +47,9 @@ export class Lead extends BasicEntity {
 
   @Column()
   statusId: number;
+
+  @OneToMany(() => LeadCall, (leadCall) => leadCall.leadId)
+  leadCalls: LeadCall[];
 
   @ManyToOne(() => BusinessType, { nullable: false })
   businessType: BusinessType;

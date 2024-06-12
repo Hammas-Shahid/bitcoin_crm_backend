@@ -79,6 +79,30 @@ export class LeadsService {
     return lead;
   }
 
+  /* Page Number Starts At 0 */
+  // async getFilteredLeads(searchString: string, page: number, limit: number) {
+  //   const results = await this.leadRepository.findAndCount({
+  //     where: [
+  //       { name: ILike(`%${searchString}%`) },
+  //       { email: ILike(`%${searchString}%`) },
+  //       { role: ILike(`%${searchString}%`) as any },
+  //     ],
+  //     take: limit,
+  //     skip: page * limit,
+  //   });
+  //   return { count: results[1], results: results[0] };
+  // }
+
+  async getPaginatedLeads(page: number, limit: number) {
+    const results = await this.leadRepository.findAndCount({
+      relations: { status: true, businessType: true, assignee: true },
+      take: limit,
+      skip: page * limit,
+      order: { created_at: 'DESC' },
+    });
+    return { count: results[1], results: results[0] };
+  }
+
   async update(id: number, updateLeadDto: UpdateLeadDto) {
     const lead = await this.leadRepository.preload({
       id,
@@ -90,6 +114,11 @@ export class LeadsService {
     }
 
     return await this.leadRepository.save(lead);
+  }
+
+  async updateLeadAssignee(leadId: number, assigneeId: number) {
+    await this.leadRepository.update({ id: leadId }, { assigneeId });
+    return { message: 'Success' };
   }
 
   async remove(id: number) {

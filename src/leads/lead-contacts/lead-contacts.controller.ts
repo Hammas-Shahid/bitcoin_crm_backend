@@ -20,23 +20,19 @@ export class LeadContactsController {
     return this.leadContactsService.create(createLeadContactDto);
   }
 
-  // @Get()
-  // findAll() {
-  //   return this.leadContactsService.findAll();
-  // }
+  @Get(':leadId/:contactId')
+  findOne(
+    @Param('leadId') leadId: string,
+    @Param('contactId') contactId: string,
+  ) {
+    return this.leadContactsService.findOneByLeadAndContact(
+      +leadId,
+      +contactId,
+    );
+  }
 
-  // @Get(':id')
-  // findOne(@Param('id') id: string) {
-  //   return this.leadContactsService.findOne(+id);
-  // }
-
-  // @Patch(':id')
-  // update(@Param('id') id: string, @Body() updateLeadContactDto: UpdateLeadContactDto) {
-  //   return this.leadContactsService.update(+id, updateLeadContactDto);
-  // }
-
-  // @Delete(':id')
-  // remove(@Param('id') id: string) {
-  //   return this.leadContactsService.remove(+id);
-  // }
+  @Delete(':id')
+  remove(@Param('id') id: string) {
+    return this.leadContactsService.remove(+id);
+  }
 }
