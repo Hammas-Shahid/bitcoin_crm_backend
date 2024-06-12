@@ -45,7 +45,7 @@ export class DispositionsService {
         { name: ILike(`%${searchString}%`) },
         { user: { name: ILike(`%${searchString}%`) } },
       ],
-      relations: { user: true },
+      relations: { user: true, leadCalls: true },
       skip: pageIndex * pageLimit,
       take: pageLimit,
       order: { id: 'DESC' },

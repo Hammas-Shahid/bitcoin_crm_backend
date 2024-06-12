@@ -1,4 +1,13 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  Req,
+} from '@nestjs/common';
 import { LeadCallsService } from './lead-calls.service';
 import { CreateLeadCallDto } from './dto/create-lead-call.dto';
 import { UpdateLeadCallDto } from './dto/update-lead-call.dto';
@@ -8,8 +17,8 @@ export class LeadCallsController {
   constructor(private readonly leadCallsService: LeadCallsService) {}
 
   @Post()
-  create(@Body() createLeadCallDto: CreateLeadCallDto) {
-    return this.leadCallsService.create(createLeadCallDto);
+  create(@Body() createLeadCallDto: CreateLeadCallDto, @Req() req: any) {
+    return this.leadCallsService.create(createLeadCallDto, req.user);
   }
 
   @Get()
@@ -23,7 +32,10 @@ export class LeadCallsController {
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateLeadCallDto: UpdateLeadCallDto) {
+  update(
+    @Param('id') id: string,
+    @Body() updateLeadCallDto: UpdateLeadCallDto,
+  ) {
     return this.leadCallsService.update(+id, updateLeadCallDto);
   }
 

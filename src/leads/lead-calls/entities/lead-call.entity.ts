@@ -17,9 +17,21 @@ export class LeadCall extends BasicEntity {
   @Column()
   leadId: number;
 
-  @ManyToOne(() => Lead, { nullable: false })
+  @ManyToOne(() => Lead, (lead) => lead.leadCalls, {
+    nullable: false,
+    onDelete: 'CASCADE',
+    onUpdate: 'CASCADE',
+  })
   lead: Lead;
 
-  @ManyToOne(() => Disposition, { nullable: false })
-  callDisposition: Disposition;
+  @ManyToOne(
+    () => Disposition,
+    (callDisposition) => callDisposition.leadCalls,
+    {
+      nullable: false,
+      onDelete: 'CASCADE',
+      onUpdate: 'CASCADE',
+    },
+  )
+  disposition: Disposition;
 }

@@ -48,7 +48,7 @@ export class Lead extends BasicEntity {
   @Column()
   statusId: number;
 
-  @OneToMany(() => LeadCall, (leadCall) => leadCall.leadId)
+  @OneToMany(() => LeadCall, (leadCall) => leadCall.lead)
   leadCalls: LeadCall[];
 
   @ManyToOne(() => BusinessType, { nullable: false })

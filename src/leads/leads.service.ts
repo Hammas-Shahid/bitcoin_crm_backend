@@ -95,7 +95,12 @@ export class LeadsService {
 
   async getPaginatedLeads(page: number, limit: number) {
     const results = await this.leadRepository.findAndCount({
-      relations: { status: true, businessType: true, assignee: true },
+      relations: {
+        status: true,
+        businessType: true,
+        assignee: true,
+        leadCalls: true,
+      },
       take: limit,
       skip: page * limit,
       order: { created_at: 'DESC' },
