@@ -9,7 +9,9 @@ import {
   PrimaryGeneratedColumn,
   ManyToOne,
   ManyToMany,
+  OneToMany,
 } from 'typeorm';
+import { LeadContact } from '../lead-contacts/entities/lead-contact.entity';
 
 @Entity()
 export class Lead extends BasicEntity {
@@ -18,9 +20,6 @@ export class Lead extends BasicEntity {
 
   @Column()
   businessTypeId: number;
-
-  @ManyToOne(() => BusinessType, { nullable: false })
-  businessType: BusinessType;
 
   @Column({ unique: true })
   address: string;
@@ -46,17 +45,14 @@ export class Lead extends BasicEntity {
   assignee: User;
 
   @Column()
-  legalName: string;
-
-  @Column()
-  legalType: string;
-
-  @Column()
   statusId: number;
+
+  @ManyToOne(() => BusinessType, { nullable: false })
+  businessType: BusinessType;
 
   @ManyToOne(() => Status, { nullable: false })
   status: Status;
 
-  @ManyToMany(() => Contact, (contact) => contact.leads)
-  contacts: Contact[];
+  @OneToMany(() => LeadContact, (lc) => lc.lead)
+  leadContacts: LeadContact[];
 }

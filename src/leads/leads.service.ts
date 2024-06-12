@@ -1,8 +1,4 @@
-import {
-  Injectable,
-  NotFoundException,
-  ConflictException,
-} from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Lead } from './entities/lead.entity';
@@ -10,6 +6,7 @@ import { CreateLeadDto } from './dto/create-lead.dto';
 import { UpdateLeadDto } from './dto/update-lead.dto';
 import { User } from 'src/users/entities/user.entity';
 import { ContactsService } from 'src/contacts/contacts.service';
+import { LeadContactsService } from './lead-contacts/lead-contacts.service';
 
 @Injectable()
 export class LeadsService {
@@ -17,36 +14,38 @@ export class LeadsService {
     @InjectRepository(Lead)
     private leadRepository: Repository<Lead>,
     private contactsService: ContactsService,
+    private leadContactService: LeadContactsService,
   ) {}
 
   async create(createLeadDto: CreateLeadDto, currentUser: User) {
     const leadContactsDTOs = structuredClone(createLeadDto.leadContacts);
     delete createLeadDto.leadContacts;
-    const existingLead = await this.leadRepository.findOne({
-      where: { address: createLeadDto.address },
-    });
-    if (existingLead) {
-      throw new ConflictException('Lead with this address already exists');
-    }
+
     const lead = this.leadRepository.create({
       ...createLeadDto,
       created_by: currentUser.id,
-    });
+    } as unknown as Lead);
+
     const savedLead = await this.leadRepository.save(lead);
-    for (let contactDTO of leadContactsDTOs) {
+
+    for (const contactDTO of leadContactsDTOs) {
       const newContact = await this.contactsService.create(
         contactDTO,
         currentUser,
       );
-      await this.addContact(savedLead.id, newContact.id);
+      await this.leadContactService.create({
+        leadId: savedLead.id,
+        contactId: newContact.id,
+      });
     }
+
     return this.leadRepository.findOne({
       where: { id: savedLead.id },
       relations: {
         assignee: true,
         status: true,
         businessType: true,
-        contacts: true,
+        leadContacts: true,
       },
     });
   }
@@ -57,7 +56,7 @@ export class LeadsService {
         businessType: true,
         assignee: true,
         status: true,
-        contacts: true,
+        leadContacts: true,
       },
     });
   }
@@ -65,18 +64,31 @@ export class LeadsService {
   async findOne(id: number) {
     const lead = await this.leadRepository.findOne({
       where: { id },
+      relations: {
+        businessType: true,
+        assignee: true,
+        status: true,
+        leadContacts: true,
+      },
     });
+
     if (!lead) {
       throw new NotFoundException(`Lead with ID ${id} not found`);
     }
+
     return lead;
   }
 
   async update(id: number, updateLeadDto: UpdateLeadDto) {
-    const lead = await this.leadRepository.preload({ id, ...updateLeadDto });
+    const lead = await this.leadRepository.preload({
+      id,
+      ...updateLeadDto,
+    } as unknown as Lead);
+
     if (!lead) {
       throw new NotFoundException(`Lead with ID ${id} not found`);
     }
+
     return await this.leadRepository.save(lead);
   }
 
@@ -87,22 +99,39 @@ export class LeadsService {
 
   async addressExists(address: string) {
     address = address.trim();
-    return await this.leadRepository.exists({ where: { address } });
+    return await this.leadRepository.findOne({ where: { address } });
   }
 
   async addContact(leadId: number, contactId: number) {
     const lead = await this.findOne(leadId);
     const contact = await this.contactsService.findOne(contactId);
+
     if (!contact) {
       throw new NotFoundException(`Contact with ID ${contactId} not found`);
     }
-    lead.contacts = [...lead.contacts, contact];
-    return await this.leadRepository.save(lead);
+
+    await this.leadContactService.create({
+      leadId: lead.id,
+      contactId: contact.id,
+    });
+
+    return await this.findOne(leadId);
   }
 
   async removeContact(leadId: number, contactId: number) {
-    const lead = await this.findOne(leadId);
-    lead.contacts = lead.contacts.filter((contact) => contact.id !== contactId);
-    return await this.leadRepository.save(lead);
+    const leadContact = await this.leadContactService.findOneByLeadAndContact(
+      leadId,
+      contactId,
+    );
+
+    if (!leadContact) {
+      throw new NotFoundException(
+        `LeadContact with lead ID ${leadId} and contact ID ${contactId} not found`,
+      );
+    }
+
+    await this.leadContactService.remove(leadContact.id);
+
+    return await this.findOne(leadId);
   }
 }

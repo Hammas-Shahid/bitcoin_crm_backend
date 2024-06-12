@@ -1,6 +1,7 @@
-import { Entity, Column, ManyToMany, JoinTable } from 'typeorm';
+import { Entity, Column, ManyToMany, JoinTable, OneToMany } from 'typeorm';
 import { Lead } from 'src/leads/entities/lead.entity';
 import { BasicEntity } from 'src/shared/entities/base-entity';
+import { LeadContact } from 'src/leads/lead-contacts/entities/lead-contact.entity';
 
 @Entity('contacts')
 export class Contact extends BasicEntity {
@@ -16,7 +17,6 @@ export class Contact extends BasicEntity {
   @Column()
   notes: string;
 
-  @ManyToMany(() => Lead, (lead) => lead.contacts)
-  @JoinTable()
-  leads: Lead[];
+  @OneToMany(() => LeadContact, (leadContact) => leadContact.contact)
+  leads: LeadContact[];
 }

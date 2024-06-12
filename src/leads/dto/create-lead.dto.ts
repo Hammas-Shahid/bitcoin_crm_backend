@@ -31,12 +31,6 @@ export class CreateLeadDto {
   assigneeId: number;
 
   @IsOptional()
-  legalName: string;
-
-  @IsOptional()
-  legalType: string;
-
-  @IsOptional()
   statusId: number;
 
   @IsOptional()
