@@ -1,11 +1,15 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { ILike, Repository } from 'typeorm';
+import { ILike, Raw, Repository } from 'typeorm';
 import { CreateDispositionDto } from './dto/create-disposition.dto';
 import { UpdateDispositionDto } from './dto/update-disposition.dto';
 import { Disposition } from './entities/disposition.entity';
 import { User } from 'src/users/entities/user.entity';
 import { take } from 'rxjs';
+import {
+  rawQuerySearchInRemovedSpecCharsString,
+  removeSpecialCharsFromString,
+} from 'src/shared/entities/functions/utils';
 
 @Injectable()
 export class DispositionsService {
@@ -42,7 +46,9 @@ export class DispositionsService {
   ) {
     const results = await this.dispositionRepository.findAndCount({
       where: [
-        { name: ILike(`%${searchString}%`) },
+        {
+          name: ILike(`%${searchString}%`),
+        },
         { user: { name: ILike(`%${searchString}%`) } },
       ],
       relations: { user: true, leadCalls: true },
@@ -55,7 +61,11 @@ export class DispositionsService {
 
   async dispositionExists(name: string) {
     return await this.dispositionRepository.exists({
-      where: { name: ILike(name) },
+      where: {
+        name: rawQuerySearchInRemovedSpecCharsString(
+          removeSpecialCharsFromString(name),
+        ),
+      },
     });
   }
 

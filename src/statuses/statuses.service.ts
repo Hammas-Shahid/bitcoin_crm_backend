@@ -7,6 +7,10 @@ import { Status } from './entities/status.entity';
 import { State } from 'src/states/entities/state.entity';
 import { StatesService } from 'src/states/states.service';
 import { User } from 'src/users/entities/user.entity';
+import {
+  rawQuerySearchInRemovedSpecCharsString,
+  removeSpecialCharsFromString,
+} from 'src/shared/entities/functions/utils';
 
 @Injectable()
 export class StatusesService {
@@ -43,9 +47,27 @@ export class StatusesService {
     return status;
   }
 
+  /* Page Number Starts At 0 */
+  async getFilteredStatuses(searchString: string, page: number, limit: number) {
+    const results = await this.statusRepository.findAndCount({
+      where: [
+        {
+          name: ILike(`%${searchString}%`),
+        },
+      ],
+      take: limit,
+      skip: page * limit,
+    });
+    return { count: results[1], results: results[0] };
+  }
+
   async statusExists(name: string) {
     return await this.statusRepository.exists({
-      where: { name: ILike(name) },
+      where: {
+        name: rawQuerySearchInRemovedSpecCharsString(
+          removeSpecialCharsFromString(name),
+        ),
+      },
     });
   }
 

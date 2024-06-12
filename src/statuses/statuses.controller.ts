@@ -28,6 +28,17 @@ export class StatusesController {
     return this.statusService.findAll();
   }
 
+  @Post('filtered-statuses')
+  getFilteredStatuses(
+    @Body() queryFilters: { searchString: string; page: number; limit: number },
+  ) {
+    return this.statusService.getFilteredStatuses(
+      queryFilters.searchString,
+      queryFilters.page,
+      queryFilters.limit,
+    );
+  }
+
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.statusService.findOne(+id);

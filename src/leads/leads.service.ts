@@ -7,6 +7,10 @@ import { UpdateLeadDto } from './dto/update-lead.dto';
 import { User } from 'src/users/entities/user.entity';
 import { ContactsService } from 'src/contacts/contacts.service';
 import { LeadContactsService } from './lead-contacts/lead-contacts.service';
+import {
+  rawQuerySearchInRemovedSpecCharsString,
+  removeSpecialCharsFromString,
+} from 'src/shared/entities/functions/utils';
 
 @Injectable()
 export class LeadsService {
@@ -133,7 +137,13 @@ export class LeadsService {
 
   async addressExists(address: string) {
     address = address.trim();
-    return await this.leadRepository.findOne({ where: { address } });
+    return await this.leadRepository.findOne({
+      where: {
+        address: rawQuerySearchInRemovedSpecCharsString(
+          removeSpecialCharsFromString(address),
+        ),
+      },
+    });
   }
 
   async addContact(leadId: number, contactId: number) {
