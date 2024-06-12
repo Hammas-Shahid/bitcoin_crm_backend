@@ -14,8 +14,6 @@ export class LeadCallsService {
   ) {}
 
   async create(createLeadCallDto: CreateLeadCallDto, currentUser: User) {
-    console.log(createLeadCallDto);
-
     return await this.leadCallRepository.save({
       ...createLeadCallDto,
       created_by: currentUser.id,

@@ -18,7 +18,6 @@ export class LeadsController {
 
   @Post()
   create(@Body() createLeadDto: CreateLeadDto, @Req() req: any) {
-    console.log(createLeadDto);
     return this.leadsService.create(createLeadDto, req.user);
   }
 
@@ -42,8 +41,6 @@ export class LeadsController {
     @Param('leadId') leadId: string,
     @Param('assigneeId') assigneeId: string,
   ) {
-    console.log(leadId, assigneeId);
-
     return this.leadsService.updateLeadAssignee(+leadId, +assigneeId);
   }
 

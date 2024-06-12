@@ -55,6 +55,7 @@ export class StatusesService {
           name: ILike(`%${searchString}%`),
         },
       ],
+      relations: { user: true },
       take: limit,
       skip: page * limit,
     });

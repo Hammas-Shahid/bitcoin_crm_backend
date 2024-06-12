@@ -37,6 +37,7 @@ export class BusinessTypesService {
   ) {
     const results = await this.businessTypesRepository.findAndCount({
       where: [{ name: ILike(`%${searchString}%`) }],
+      relations: { user: true },
       take: limit,
       skip: page * limit,
     });
