@@ -48,6 +48,7 @@ export class UsersService {
       where: { email: ILike(email) },
       select: {
         id: true,
+        name: true,
         email: true,
         password: true,
         is_active: true,
