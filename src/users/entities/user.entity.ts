@@ -1,6 +1,7 @@
 import { BeforeInsert, Column, Entity, OneToMany } from 'typeorm';
 import { BasicEntity } from '../../shared/entities/base-entity';
 import { Lead } from 'src/leads/entities/lead.entity';
+import { Disposition } from 'src/dispositions/entities/disposition.entity';
 
 @Entity()
 export class User extends BasicEntity {
@@ -23,7 +24,10 @@ export class User extends BasicEntity {
   failed_attempts: number;
 
   @OneToMany(() => Lead, (lead) => lead.assigneeId)
-  lead: Lead;
+  lead: Lead[];
+
+  @OneToMany(() => Disposition, (disposition) => disposition.created_by)
+  dispositions: Disposition[];
 }
 
 export enum UserRoles {
