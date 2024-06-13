@@ -36,7 +36,10 @@ export class BusinessTypesService {
     limit: number,
   ) {
     const results = await this.businessTypesRepository.findAndCount({
-      where: [{ name: ILike(`%${searchString}%`) }, { user: {name: ILike(`${searchString}`)}}],
+      where: [
+        { name: ILike(`%${searchString}%`) },
+        { user: { name: ILike(`%${searchString}%`) } },
+      ],
       relations: { user: true },
       take: limit,
       skip: page * limit,
@@ -62,8 +65,15 @@ export class BusinessTypesService {
     });
   }
 
-  async update(id: number, updateBusinessTypeDto: UpdateBusinessTypeDto, currentUser: User) {
-    await this.businessTypesRepository.update(id, {...updateBusinessTypeDto, updated_by: currentUser.id});
+  async update(
+    id: number,
+    updateBusinessTypeDto: UpdateBusinessTypeDto,
+    currentUser: User,
+  ) {
+    await this.businessTypesRepository.update(id, {
+      ...updateBusinessTypeDto,
+      updated_by: currentUser.id,
+    });
     const updatedBusinessType = await this.businessTypesRepository.findOneBy({
       id,
     });
