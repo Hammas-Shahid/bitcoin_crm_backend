@@ -55,7 +55,7 @@ export class DispositionsController {
     @Body() updateDispositionDto: UpdateDispositionDto,
     @Req() req: any,
   ) {
-    return this.dispositionService.update(+id, updateDispositionDto);
+    return this.dispositionService.update(+id, updateDispositionDto, req.user);
   }
 
   @Delete(':id')
