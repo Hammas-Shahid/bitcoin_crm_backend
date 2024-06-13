@@ -7,7 +7,7 @@ export class ServiceProvider extends BasicEntity{
   @Column({ unique: true })
   name: string;
 
-  @ManyToOne(() => User, (user) => user.businessTypes, {
+  @ManyToOne(() => User, (user) => user.serviceProviders, {
     onDelete: 'CASCADE',
     onUpdate: 'CASCADE',
   })
