@@ -42,11 +42,11 @@ export class ServiceProvidersService {
   }
 
   async findOne(id: number) {
-    const businessType = await this.providersRepository.findOneBy({ id });
-    if (!businessType) {
-      throw new NotFoundException(`BusinessType with ID ${id} not found`);
+    const provider = await this.providersRepository.findOneBy({ id });
+    if (!provider) {
+      throw new NotFoundException(`Provider with ID ${id} not found`);
     }
-    return businessType;
+    return provider;
   }
 
   async providerExists(name: string) {
