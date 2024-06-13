@@ -14,6 +14,7 @@ import { StatusesModule } from './statuses/statuses.module';
 import { DispositionsModule } from './dispositions/dispositions.module';
 import { LeadsModule } from './leads/leads.module';
 import { ContactsModule } from './contacts/contacts.module';
+import { ServiceProvidersModule } from './service-providers/service-providers.module';
 
 @Module({
   imports: [
@@ -28,6 +29,7 @@ import { ContactsModule } from './contacts/contacts.module';
     DispositionsModule,
     LeadsModule,
     ContactsModule,
+    ServiceProvidersModule,
   ],
   controllers: [AppController],
   providers: [
