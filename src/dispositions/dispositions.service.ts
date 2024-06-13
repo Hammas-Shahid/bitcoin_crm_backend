@@ -1,11 +1,10 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { ILike, Raw, Repository } from 'typeorm';
+import { ILike, Repository } from 'typeorm';
 import { CreateDispositionDto } from './dto/create-disposition.dto';
 import { UpdateDispositionDto } from './dto/update-disposition.dto';
 import { Disposition } from './entities/disposition.entity';
 import { User } from 'src/users/entities/user.entity';
-import { take } from 'rxjs';
 import {
   rawQuerySearchInRemovedSpecCharsString,
   removeSpecialCharsFromString,
@@ -69,11 +68,15 @@ export class DispositionsService {
     });
   }
 
-  async update(id: number, updateDispositionDto: UpdateDispositionDto, currentUser: User) {
+  async update(
+    id: number,
+    updateDispositionDto: UpdateDispositionDto,
+    currentUser: User,
+  ) {
     const disposition = await this.dispositionRepository.preload({
       id,
       ...updateDispositionDto,
-      updated_by: currentUser.id
+      updated_by: currentUser.id,
     });
     if (!disposition) {
       throw new NotFoundException(`Disposition with ID ${id} not found`);

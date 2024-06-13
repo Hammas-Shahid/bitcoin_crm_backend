@@ -5,10 +5,6 @@ import { State } from './entities/state.entity';
 import { CreateStateDto } from './dto/create-state.dto';
 import { UpdateStateDto } from './dto/update-state.dto';
 import { User } from 'src/users/entities/user.entity';
-import {
-  rawQuerySearchInRemovedSpecCharsString,
-  removeSpecialCharsFromString,
-} from 'src/shared/entities/functions/utils';
 
 @Injectable()
 export class StatesService {
@@ -40,6 +36,7 @@ export class StatesService {
       ],
       take: limit,
       skip: page * limit,
+      order: { id: 'DESC' },
     });
     return { count: results[1], results: results[0] };
   }
@@ -52,8 +49,15 @@ export class StatesService {
     return state;
   }
 
-  async update(id: number, updateStateDto: UpdateStateDto, currentUser: User): Promise<State> {
-    await this.stateRepository.update(id, {...updateStateDto, updated_by: currentUser.id});
+  async update(
+    id: number,
+    updateStateDto: UpdateStateDto,
+    currentUser: User,
+  ): Promise<State> {
+    await this.stateRepository.update(id, {
+      ...updateStateDto,
+      updated_by: currentUser.id,
+    });
     const updatedState = await this.stateRepository.findOneBy({ id });
     if (!updatedState) {
       throw new NotFoundException(`State with ID ${id} not found`);

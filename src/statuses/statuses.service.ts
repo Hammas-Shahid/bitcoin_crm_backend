@@ -58,6 +58,7 @@ export class StatusesService {
       relations: { user: true },
       take: limit,
       skip: page * limit,
+      order: { id: 'DESC' },
     });
     return { count: results[1], results: results[0] };
   }
