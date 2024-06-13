@@ -55,6 +55,7 @@ export class StatusesService {
         {
           name: ILike(`%${searchString}%`),
         },
+        { user: {name: ILike(`${searchString}`)}}
       ],
       relations: { user: true },
       take: limit,

@@ -33,7 +33,7 @@ export class ServiceProvidersService {
     limit: number,
   ) {
     const results = await this.providersRepository.findAndCount({
-      where: [{ name: ILike(`%${searchString}%`) }],
+      where: [{ name: ILike(`%${searchString}%`) }, { user: {name: ILike(`${searchString}`)}}],
       relations: { user: true },
       take: limit,
       skip: page * limit,
