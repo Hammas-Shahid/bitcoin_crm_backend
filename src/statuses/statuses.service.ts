@@ -6,10 +6,7 @@ import { UpdateStatusDto } from './dto/update-status.dto';
 import { Status } from './entities/status.entity';
 import { StatesService } from 'src/states/states.service';
 import { User } from 'src/users/entities/user.entity';
-import {
-  rawQuerySearchInRemovedSpecCharsString,
-  removeSpecialCharsFromString,
-} from 'src/shared/entities/functions/utils';
+import { rawQuerySearchInRemovedSpacesFromString } from 'src/shared/entities/functions/utils';
 
 @Injectable()
 export class StatusesService {
@@ -66,9 +63,7 @@ export class StatusesService {
   async statusExists(name: string) {
     return await this.statusRepository.exists({
       where: {
-        name: rawQuerySearchInRemovedSpecCharsString(
-          removeSpecialCharsFromString(name),
-        ),
+        name: rawQuerySearchInRemovedSpacesFromString(name),
       },
     });
   }

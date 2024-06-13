@@ -6,9 +6,21 @@ export const removeSpecialCharsFromString = (value: string) => {
 };
 
 export const rawQuerySearchInRemovedSpecCharsString = (value: string) => {
+  value = value.replace(/[^a-zA-Z0-9]/g, '').toLowerCase();
   return Raw(
     (alias) =>
       `LOWER(REGEXP_REPLACE(${alias}, '[^a-zA-Z0-9]', '', 'g')) ILIKE :searchTerm`,
+    {
+      searchTerm: `${value}`,
+    },
+  );
+};
+
+export const rawQuerySearchInRemovedSpacesFromString = (value: string) => {
+  value = value.replace(/\s/g, '').toLowerCase();
+  return Raw(
+    (alias) =>
+      `LOWER(REGEXP_REPLACE(${alias}, ' ', '', 'g')) ILIKE :searchTerm`,
     {
       searchTerm: `${value}`,
     },
