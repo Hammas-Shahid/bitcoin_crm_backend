@@ -4,6 +4,7 @@ import { Lead } from 'src/leads/entities/lead.entity';
 import { Disposition } from 'src/dispositions/entities/disposition.entity';
 import { BusinessType } from 'src/business-types/entities/business-type.entity';
 import { Status } from 'src/statuses/entities/status.entity';
+import { ServiceProvider } from 'src/service-providers/entities/service-provider.entity';
 
 @Entity()
 export class User extends BasicEntity {
@@ -33,6 +34,9 @@ export class User extends BasicEntity {
 
   @OneToMany(() => BusinessType, (businessType) => businessType.created_by)
   businessTypes: BusinessType[];
+
+  @OneToMany(() => ServiceProvider, (provider) => provider.created_by)
+  serviceProviders: ServiceProvider[];
 
   @OneToMany(() => Status, (status) => status.created_by)
   statuses: Status[];
