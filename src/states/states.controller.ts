@@ -50,8 +50,9 @@ export class StatesController {
   update(
     @Param('id') id: number,
     @Body() updateStateDto: UpdateStateDto,
+    @Req() req: any
   ): Promise<State> {
-    return this.stateService.update(id, updateStateDto);
+    return this.stateService.update(id, updateStateDto, req.user);
   }
 
   @Delete(':id')

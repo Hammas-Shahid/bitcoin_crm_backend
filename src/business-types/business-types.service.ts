@@ -62,8 +62,8 @@ export class BusinessTypesService {
     });
   }
 
-  async update(id: number, updateBusinessTypeDto: UpdateBusinessTypeDto) {
-    await this.businessTypesRepository.update(id, updateBusinessTypeDto);
+  async update(id: number, updateBusinessTypeDto: UpdateBusinessTypeDto, currentUser: User) {
+    await this.businessTypesRepository.update(id, {...updateBusinessTypeDto, updated_by: currentUser.id});
     const updatedBusinessType = await this.businessTypesRepository.findOneBy({
       id,
     });

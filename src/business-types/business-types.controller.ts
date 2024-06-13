@@ -54,8 +54,9 @@ export class BusinessTypesController {
   update(
     @Param('id') id: string,
     @Body() updateBusinessTypeDto: UpdateBusinessTypeDto,
+    @Req() req:any
   ) {
-    return this.businessTypesService.update(+id, updateBusinessTypeDto);
+    return this.businessTypesService.update(+id, updateBusinessTypeDto, req.user);
   }
 
   @Delete(':id')

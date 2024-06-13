@@ -97,7 +97,7 @@ export class UsersService {
     if (currentUser.role !== UserRoles.Admin && updateUserDto.password) {
       delete updateUserDto.password;
     }
-    const user = await this.userRepository.preload({ id, ...updateUserDto });
+    const user = await this.userRepository.preload({ id, ...updateUserDto, updated_by: currentUser.id });
 
     if (!user) {
       throw new Error('User not found');

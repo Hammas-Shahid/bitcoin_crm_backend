@@ -34,10 +34,11 @@ export class ContactsService {
     return contact;
   }
 
-  async update(id: number, updateContactDto: UpdateContactDto) {
+  async update(id: number, updateContactDto: UpdateContactDto, currentUser: User) {
     const contact = await this.contactRepository.preload({
       id,
       ...updateContactDto,
+      updated_by: currentUser.id
     });
     if (!contact) {
       throw new NotFoundException(`Contact with ID ${id} not found`);

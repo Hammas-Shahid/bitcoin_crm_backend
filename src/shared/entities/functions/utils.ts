@@ -11,7 +11,7 @@ export const rawQuerySearchInRemovedSpecCharsString = (value: string) => {
     (alias) =>
       `LOWER(REGEXP_REPLACE(${alias}, '[^a-zA-Z0-9]', '', 'g')) ILIKE :searchTerm`,
     {
-      searchTerm: `%${value}%`,
+      searchTerm: `${value}`,
     },
   );
 };
