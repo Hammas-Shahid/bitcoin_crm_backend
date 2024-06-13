@@ -59,8 +59,8 @@ export class ServiceProvidersService {
     });
   }
 
-  async update(id: number, updateServiceProviderDto: UpdateServiceProviderDto) {
-    await this.providersRepository.update(id, updateServiceProviderDto);
+  async update(id: number, updateServiceProviderDto: UpdateServiceProviderDto, currentUser: User) {
+    await this.providersRepository.update(id, {...updateServiceProviderDto, updated_by: currentUser.id});
     const updatedProvider = await this.providersRepository.findOneBy({
       id,
     });

@@ -11,6 +11,7 @@ import {
   rawQuerySearchInRemovedSpecCharsString,
   removeSpecialCharsFromString,
 } from 'src/shared/entities/functions/utils';
+import { cursorTo } from 'readline';
 
 @Injectable()
 export class StatusesService {
@@ -72,10 +73,11 @@ export class StatusesService {
     });
   }
 
-  async update(id: number, updateStatusDto: UpdateStatusDto) {
+  async update(id: number, updateStatusDto: UpdateStatusDto, currentUser: User) {
     const status = await this.statusRepository.preload({
       id,
       ...updateStatusDto,
+      updated_by: currentUser.id
     });
     if (!status) {
       throw new NotFoundException(`Status with ID ${id} not found`);

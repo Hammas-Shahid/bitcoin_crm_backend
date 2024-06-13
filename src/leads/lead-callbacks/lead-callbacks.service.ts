@@ -28,8 +28,8 @@ export class LeadCallbacksService {
     return `This action returns a #${id} leadCall`;
   }
 
-  async update(id: number, updateLeadCallDto: UpdateLeadCallbackDto) {
-    return await this.leadCallBackRepository.save({ ...updateLeadCallDto, id });
+  async update(id: number, updateLeadCallDto: UpdateLeadCallbackDto, currentUser: User) {
+    return await this.leadCallBackRepository.save({ ...updateLeadCallDto, id, updated_by: currentUser.id });
   }
 
   async remove(id: number) {

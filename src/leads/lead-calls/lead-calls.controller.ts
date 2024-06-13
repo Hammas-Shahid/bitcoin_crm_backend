@@ -35,8 +35,9 @@ export class LeadCallsController {
   update(
     @Param('id') id: string,
     @Body() updateLeadCallDto: UpdateLeadCallDto,
+    @Req() req: any
   ) {
-    return this.leadCallsService.update(+id, updateLeadCallDto);
+    return this.leadCallsService.update(+id, updateLeadCallDto, req.user);
   }
 
   @Delete(':id')

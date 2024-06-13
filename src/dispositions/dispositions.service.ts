@@ -69,10 +69,11 @@ export class DispositionsService {
     });
   }
 
-  async update(id: number, updateDispositionDto: UpdateDispositionDto) {
+  async update(id: number, updateDispositionDto: UpdateDispositionDto, currentUser: User) {
     const disposition = await this.dispositionRepository.preload({
       id,
       ...updateDispositionDto,
+      updated_by: currentUser.id
     });
     if (!disposition) {
       throw new NotFoundException(`Disposition with ID ${id} not found`);

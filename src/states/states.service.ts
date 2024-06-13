@@ -52,8 +52,8 @@ export class StatesService {
     return state;
   }
 
-  async update(id: number, updateStateDto: UpdateStateDto): Promise<State> {
-    await this.stateRepository.update(id, updateStateDto);
+  async update(id: number, updateStateDto: UpdateStateDto, currentUser: User): Promise<State> {
+    await this.stateRepository.update(id, {...updateStateDto, updated_by: currentUser.id});
     const updatedState = await this.stateRepository.findOneBy({ id });
     if (!updatedState) {
       throw new NotFoundException(`State with ID ${id} not found`);

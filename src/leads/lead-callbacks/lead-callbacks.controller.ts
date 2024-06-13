@@ -38,8 +38,9 @@ export class LeadCallbacksController {
   update(
     @Param('id') id: string,
     @Body() updateLeadCallbackDto: UpdateLeadCallbackDto,
+    @Req() req: any
   ) {
-    return this.leadCallbacksService.update(+id, updateLeadCallbackDto);
+    return this.leadCallbacksService.update(+id, updateLeadCallbackDto, req.user);
   }
 
   @Delete(':id')
