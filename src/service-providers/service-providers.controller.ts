@@ -1,18 +1,32 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Req } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  Req,
+} from '@nestjs/common';
 import { ServiceProvidersService } from './service-providers.service';
 import { CreateServiceProviderDto } from './dto/create-service-provider.dto';
 import { UpdateServiceProviderDto } from './dto/update-service-provider.dto';
 
 @Controller('service-providers')
 export class ServiceProvidersController {
-  constructor(private readonly serviceProvidersService: ServiceProvidersService) {}
+  constructor(
+    private readonly serviceProvidersService: ServiceProvidersService,
+  ) {}
 
   @Post()
   create(
     @Body() createServiceProviderDto: CreateServiceProviderDto,
     @Req() req: any,
   ) {
-    return this.serviceProvidersService.create(createServiceProviderDto, req.user);
+    return this.serviceProvidersService.create(
+      createServiceProviderDto,
+      req.user,
+    );
   }
 
   @Get()
@@ -45,9 +59,13 @@ export class ServiceProvidersController {
   update(
     @Param('id') id: string,
     @Body() updateServiceProviderDto: UpdateServiceProviderDto,
-    @Req() req: any
+    @Req() req: any,
   ) {
-    return this.serviceProvidersService.update(+id, updateServiceProviderDto, req.user);
+    return this.serviceProvidersService.update(
+      +id,
+      updateServiceProviderDto,
+      req.user,
+    );
   }
 
   @Delete(':id')
