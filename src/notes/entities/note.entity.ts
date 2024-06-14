@@ -1,5 +1,6 @@
 import { IsEnum, IsString } from 'class-validator';
 import { Lead } from 'src/leads/entities/lead.entity';
+import { LeadCallBack } from 'src/leads/lead-callbacks/entities/lead-callback.entity';
 import { LeadCall } from 'src/leads/lead-calls/entities/lead-call.entity';
 import { BasicEntity } from 'src/shared/entities/base-entity';
 import { User } from 'src/users/entities/user.entity';
@@ -24,13 +25,16 @@ export class Note extends BasicEntity {
     @IsEnum(NoteTypes)
     type: NoteTypes;
 
-
-
     @OneToOne(() => LeadCall, leadCall => leadCall.note)
     leadCall: LeadCall;
 
+    @OneToOne(() => LeadCallBack, leadCallBack => leadCallBack.note)
+    leadCallBack: LeadCallBack;
 
-    // @ManyToOne(()=> User, (user)=> user.notes)
-    // @JoinColumn({ name: 'created_by' })
-    // user: User;
+    @OneToOne(() => Lead, lead => lead.leadNote)
+    lead: Lead;
+  
+    @OneToOne(() => Lead, lead => lead.saleNote)
+    sale: Lead;
+    
 }

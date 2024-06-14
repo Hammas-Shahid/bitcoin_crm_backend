@@ -11,11 +11,13 @@ import {
   ManyToMany,
   OneToMany,
   OneToOne,
+  JoinColumn,
 } from 'typeorm';
 import { LeadContact } from '../lead-contacts/entities/lead-contact.entity';
 import { LeadCall } from '../lead-calls/entities/lead-call.entity';
 import { LeadCallBack } from '../lead-callbacks/entities/lead-callback.entity';
 import { LeadContract } from '../lead-contracts/entities/lead-contract.entity';
+import { Note } from 'src/notes/entities/note.entity';
 
 @Entity()
 export class Lead extends BasicEntity {
@@ -50,6 +52,12 @@ export class Lead extends BasicEntity {
   statusId: number;
   
   @Column({nullable: true})
+  leadNoteId: number;
+
+  @Column({nullable: true})
+  saleNoteId: number;
+
+  @Column({nullable: true})
   saleMadeById: number;
   
   @ManyToOne(() => User, { nullable: true })
@@ -75,4 +83,20 @@ export class Lead extends BasicEntity {
 
   @OneToOne(() => LeadContract, leadContract => leadContract.lead)
   leadContract: LeadContract;
+
+  @OneToOne(() => Note, (note) => note.lead, {
+    nullable: true,
+    onDelete: 'CASCADE',
+    onUpdate: 'CASCADE',
+  })
+  @JoinColumn({ name: 'leadNoteId' })
+  leadNote: Note;
+
+  @OneToOne(() => Note, (note) => note.sale, {
+    nullable: true,
+    onDelete: 'CASCADE',
+    onUpdate: 'CASCADE',
+  })
+  @JoinColumn({ name: 'saleNoteId' })
+  saleNote: Note;
 }

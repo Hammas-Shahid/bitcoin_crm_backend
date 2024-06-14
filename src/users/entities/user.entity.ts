@@ -45,8 +45,6 @@ export class User extends BasicEntity {
   @OneToMany(() => Status, (status) => status.created_by)
   statuses: Status[];
 
-  // @OneToMany(() => Note, (note) => note.user)
-  // notes: Note[];
 }
 
 export enum UserRoles {
