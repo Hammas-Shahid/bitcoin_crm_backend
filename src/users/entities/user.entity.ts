@@ -5,6 +5,7 @@ import { Disposition } from 'src/dispositions/entities/disposition.entity';
 import { BusinessType } from 'src/business-types/entities/business-type.entity';
 import { Status } from 'src/statuses/entities/status.entity';
 import { ServiceProvider } from 'src/service-providers/entities/service-provider.entity';
+import { Note } from 'src/notes/entities/note.entity';
 
 @Entity()
 export class User extends BasicEntity {
@@ -40,6 +41,9 @@ export class User extends BasicEntity {
 
   @OneToMany(() => Status, (status) => status.created_by)
   statuses: Status[];
+
+  @OneToMany(() => Note, (note) => note.user)
+  notes: Note[];
 }
 
 export enum UserRoles {

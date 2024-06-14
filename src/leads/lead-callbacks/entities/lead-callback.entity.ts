@@ -15,7 +15,7 @@ export class LeadCallBack extends BasicEntity {
   @Column()
   leadId: number;
 
-  @Column()
+  @Column({nullable: true})
   noteId: number;
 
   @OneToOne(() => Note, (note) => note.note, {

@@ -1,7 +1,7 @@
 import { IsEnum, IsString } from 'class-validator';
 import { BasicEntity } from 'src/shared/entities/base-entity';
 import { User } from 'src/users/entities/user.entity';
-import { Column, Entity, JoinColumn } from 'typeorm';
+import { Column, Entity, JoinColumn, ManyToOne } from 'typeorm';
 
 export enum NoteTypes {
   Call_Note = "Call Note",
@@ -22,6 +22,7 @@ export class Note extends BasicEntity {
     @IsEnum(NoteTypes)
     type: NoteTypes;
 
+    @ManyToOne(()=> User, (user)=> user.notes)
     @JoinColumn({ name: 'created_by' })
     user: User;
 }
