@@ -5,10 +5,7 @@ import { CreateBusinessTypeDto } from './dto/create-business-type.dto';
 import { UpdateBusinessTypeDto } from './dto/update-business-type.dto';
 import { BusinessType } from './entities/business-type.entity';
 import { User } from 'src/users/entities/user.entity';
-import {
-  rawQuerySearchInRemovedSpecCharsString,
-  removeSpecialCharsFromString,
-} from 'src/shared/entities/functions/utils';
+import { rawQuerySearchInRemovedSpacesFromString } from 'src/shared/entities/functions/utils';
 
 @Injectable()
 export class BusinessTypesService {
@@ -36,10 +33,16 @@ export class BusinessTypesService {
     limit: number,
   ) {
     const results = await this.businessTypesRepository.findAndCount({
-      where: [{ name: ILike(`%${searchString}%`) }],
+      where: [
+        { name: ILike(`%${searchString}%`) },
+        { user: { name: ILike(`%${searchString}%`) } },
+      ],
       relations: { user: true },
       take: limit,
       skip: page * limit,
+      order: {
+        id: 'DESC',
+      },
     });
     return { count: results[1], results: results[0] };
   }
@@ -55,15 +58,20 @@ export class BusinessTypesService {
   async businessTypeExists(name: string) {
     return await this.businessTypesRepository.exists({
       where: {
-        name: rawQuerySearchInRemovedSpecCharsString(
-          removeSpecialCharsFromString(name),
-        ),
+        name: rawQuerySearchInRemovedSpacesFromString(name),
       },
     });
   }
 
-  async update(id: number, updateBusinessTypeDto: UpdateBusinessTypeDto) {
-    await this.businessTypesRepository.update(id, updateBusinessTypeDto);
+  async update(
+    id: number,
+    updateBusinessTypeDto: UpdateBusinessTypeDto,
+    currentUser: User,
+  ) {
+    await this.businessTypesRepository.update(id, {
+      ...updateBusinessTypeDto,
+      updated_by: currentUser.id,
+    });
     const updatedBusinessType = await this.businessTypesRepository.findOneBy({
       id,
     });

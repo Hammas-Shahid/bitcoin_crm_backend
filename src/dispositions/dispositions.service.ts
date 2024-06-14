@@ -1,15 +1,11 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { ILike, Raw, Repository } from 'typeorm';
+import { ILike, Repository } from 'typeorm';
 import { CreateDispositionDto } from './dto/create-disposition.dto';
 import { UpdateDispositionDto } from './dto/update-disposition.dto';
 import { Disposition } from './entities/disposition.entity';
 import { User } from 'src/users/entities/user.entity';
-import { take } from 'rxjs';
-import {
-  rawQuerySearchInRemovedSpecCharsString,
-  removeSpecialCharsFromString,
-} from 'src/shared/entities/functions/utils';
+import { rawQuerySearchInRemovedSpacesFromString } from 'src/shared/entities/functions/utils';
 
 @Injectable()
 export class DispositionsService {
@@ -62,17 +58,20 @@ export class DispositionsService {
   async dispositionExists(name: string) {
     return await this.dispositionRepository.exists({
       where: {
-        name: rawQuerySearchInRemovedSpecCharsString(
-          removeSpecialCharsFromString(name),
-        ),
+        name: rawQuerySearchInRemovedSpacesFromString(name),
       },
     });
   }
 
-  async update(id: number, updateDispositionDto: UpdateDispositionDto) {
+  async update(
+    id: number,
+    updateDispositionDto: UpdateDispositionDto,
+    currentUser: User,
+  ) {
     const disposition = await this.dispositionRepository.preload({
       id,
       ...updateDispositionDto,
+      updated_by: currentUser.id,
     });
     if (!disposition) {
       throw new NotFoundException(`Disposition with ID ${id} not found`);

@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Req } from '@nestjs/common';
 import { LeadNotesService } from './lead-notes.service';
 import { CreateLeadNoteDto } from './dto/create-lead-note.dto';
 import { UpdateLeadNoteDto } from './dto/update-lead-note.dto';
@@ -23,8 +23,8 @@ export class LeadNotesController {
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateLeadNoteDto: UpdateLeadNoteDto) {
-    return this.leadNotesService.update(+id, updateLeadNoteDto);
+  update(@Param('id') id: string, @Body() updateLeadNoteDto: UpdateLeadNoteDto, @Req() req: any) {
+    return this.leadNotesService.update(+id, updateLeadNoteDto, req.user);
   }
 
   @Delete(':id')

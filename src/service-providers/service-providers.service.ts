@@ -5,7 +5,7 @@ import { ServiceProvider } from './entities/service-provider.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ILike, Repository } from 'typeorm';
 import { User } from 'src/users/entities/user.entity';
-import { rawQuerySearchInRemovedSpecCharsString, removeSpecialCharsFromString } from 'src/shared/entities/functions/utils';
+import { rawQuerySearchInRemovedSpacesFromString } from 'src/shared/entities/functions/utils';
 
 @Injectable()
 export class ServiceProvidersService {
@@ -33,10 +33,16 @@ export class ServiceProvidersService {
     limit: number,
   ) {
     const results = await this.providersRepository.findAndCount({
-      where: [{ name: ILike(`%${searchString}%`) }],
+      where: [
+        { name: ILike(`%${searchString}%`) },
+        { user: { name: ILike(`%${searchString}%`) } },
+      ],
       relations: { user: true },
       take: limit,
       skip: page * limit,
+      order: {
+        id: 'DESC',
+      },
     });
     return { count: results[1], results: results[0] };
   }
@@ -52,15 +58,20 @@ export class ServiceProvidersService {
   async providerExists(name: string) {
     return await this.providersRepository.exists({
       where: {
-        name: rawQuerySearchInRemovedSpecCharsString(
-          removeSpecialCharsFromString(name),
-        ),
+        name: rawQuerySearchInRemovedSpacesFromString(name),
       },
     });
   }
 
-  async update(id: number, updateServiceProviderDto: UpdateServiceProviderDto) {
-    await this.providersRepository.update(id, updateServiceProviderDto);
+  async update(
+    id: number,
+    updateServiceProviderDto: UpdateServiceProviderDto,
+    currentUser: User,
+  ) {
+    await this.providersRepository.update(id, {
+      ...updateServiceProviderDto,
+      updated_by: currentUser.id,
+    });
     const updatedProvider = await this.providersRepository.findOneBy({
       id,
     });

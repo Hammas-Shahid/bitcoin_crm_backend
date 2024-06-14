@@ -40,13 +40,14 @@ export class LeadsController {
   updateLeadAssignee(
     @Param('leadId') leadId: string,
     @Param('assigneeId') assigneeId: string,
+    @Req() req: any
   ) {
-    return this.leadsService.updateLeadAssignee(+leadId, +assigneeId);
+    return this.leadsService.updateLeadAssignee(+leadId, +assigneeId, req.user);
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateLeadDto: UpdateLeadDto) {
-    return this.leadsService.update(+id, updateLeadDto);
+  update(@Param('id') id: string, @Body() updateLeadDto: UpdateLeadDto, @Req() req: any) {
+    return this.leadsService.update(+id, updateLeadDto, req.user);
   }
 
   @Delete(':id')

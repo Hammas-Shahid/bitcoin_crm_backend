@@ -7,10 +7,7 @@ import { UpdateLeadDto } from './dto/update-lead.dto';
 import { User } from 'src/users/entities/user.entity';
 import { ContactsService } from 'src/contacts/contacts.service';
 import { LeadContactsService } from './lead-contacts/lead-contacts.service';
-import {
-  rawQuerySearchInRemovedSpecCharsString,
-  removeSpecialCharsFromString,
-} from 'src/shared/entities/functions/utils';
+import { rawQuerySearchInRemovedSpacesFromString } from 'src/shared/entities/functions/utils';
 
 @Injectable()
 export class LeadsService {
@@ -112,10 +109,11 @@ export class LeadsService {
     return { count: results[1], results: results[0] };
   }
 
-  async update(id: number, updateLeadDto: UpdateLeadDto) {
+  async update(id: number, updateLeadDto: UpdateLeadDto, currentUser: User) {
     const lead = await this.leadRepository.preload({
       id,
       ...updateLeadDto,
+      updated_by: currentUser.id,
     } as unknown as Lead);
 
     if (!lead) {
@@ -125,8 +123,15 @@ export class LeadsService {
     return await this.leadRepository.save(lead);
   }
 
-  async updateLeadAssignee(leadId: number, assigneeId: number) {
-    await this.leadRepository.update({ id: leadId }, { assigneeId });
+  async updateLeadAssignee(
+    leadId: number,
+    assigneeId: number,
+    currentUser: User,
+  ) {
+    await this.leadRepository.update(
+      { id: leadId },
+      { assigneeId, updated_by: currentUser.id },
+    );
     return { message: 'Success' };
   }
 
@@ -139,9 +144,7 @@ export class LeadsService {
     address = address.trim();
     return await this.leadRepository.findOne({
       where: {
-        address: rawQuerySearchInRemovedSpecCharsString(
-          removeSpecialCharsFromString(address),
-        ),
+        address: rawQuerySearchInRemovedSpacesFromString(address),
       },
     });
   }

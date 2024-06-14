@@ -4,13 +4,9 @@ import { ILike, Repository } from 'typeorm';
 import { CreateStatusDto } from './dto/create-status.dto';
 import { UpdateStatusDto } from './dto/update-status.dto';
 import { Status } from './entities/status.entity';
-import { State } from 'src/states/entities/state.entity';
 import { StatesService } from 'src/states/states.service';
 import { User } from 'src/users/entities/user.entity';
-import {
-  rawQuerySearchInRemovedSpecCharsString,
-  removeSpecialCharsFromString,
-} from 'src/shared/entities/functions/utils';
+import { rawQuerySearchInRemovedSpacesFromString } from 'src/shared/entities/functions/utils';
 
 @Injectable()
 export class StatusesService {
@@ -54,10 +50,12 @@ export class StatusesService {
         {
           name: ILike(`%${searchString}%`),
         },
+        { user: { name: ILike(`%${searchString}%`) } },
       ],
       relations: { user: true },
       take: limit,
       skip: page * limit,
+      order: { id: 'DESC' },
     });
     return { count: results[1], results: results[0] };
   }
@@ -65,17 +63,20 @@ export class StatusesService {
   async statusExists(name: string) {
     return await this.statusRepository.exists({
       where: {
-        name: rawQuerySearchInRemovedSpecCharsString(
-          removeSpecialCharsFromString(name),
-        ),
+        name: rawQuerySearchInRemovedSpacesFromString(name),
       },
     });
   }
 
-  async update(id: number, updateStatusDto: UpdateStatusDto) {
+  async update(
+    id: number,
+    updateStatusDto: UpdateStatusDto,
+    currentUser: User,
+  ) {
     const status = await this.statusRepository.preload({
       id,
       ...updateStatusDto,
+      updated_by: currentUser.id,
     });
     if (!status) {
       throw new NotFoundException(`Status with ID ${id} not found`);

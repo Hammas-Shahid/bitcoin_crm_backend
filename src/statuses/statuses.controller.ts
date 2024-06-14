@@ -55,7 +55,7 @@ export class StatusesController {
     @Body() updateStatusDto: UpdateStatusDto,
     @Req() req: any,
   ) {
-    return this.statusService.update(+id, updateStatusDto);
+    return this.statusService.update(+id, updateStatusDto, req.user);
   }
 
   @Delete(':id')

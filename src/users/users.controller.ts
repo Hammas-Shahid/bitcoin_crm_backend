@@ -6,15 +6,12 @@ import {
   Patch,
   Param,
   Delete,
-  UseGuards,
   Req,
   UnauthorizedException,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { BypassJwtAuth } from 'src/auth/bypass-jwt-auth.decorator';
-import { LocalAuthGuard } from 'src/auth/local-auth.guard';
 import { UserRoles } from './entities/user.entity';
 
 @Controller('users')

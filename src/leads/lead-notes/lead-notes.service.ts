@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { CreateLeadNoteDto } from './dto/create-lead-note.dto';
 import { UpdateLeadNoteDto } from './dto/update-lead-note.dto';
+import { User } from 'src/users/entities/user.entity';
 
 @Injectable()
 export class LeadNotesService {
@@ -16,7 +17,7 @@ export class LeadNotesService {
     return `This action returns a #${id} leadNote`;
   }
 
-  update(id: number, updateLeadNoteDto: UpdateLeadNoteDto) {
+  update(id: number, updateLeadNoteDto: UpdateLeadNoteDto, currentUser: User) {
     return `This action updates a #${id} leadNote`;
   }
 
