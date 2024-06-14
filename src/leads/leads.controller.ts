@@ -21,6 +21,14 @@ export class LeadsController {
     return this.leadsService.create(createLeadDto, req.user);
   }
 
+  @Post('/lead-notes')
+  createNote(
+    @Body() bodyNote:{note:string,leadId:number},
+    @Req() req: any,
+  ) {
+    return this.leadsService.createLeadNote(bodyNote.note,bodyNote.leadId, req.user);
+  }
+
   @Get()
   findAll() {
     return this.leadsService.findAll();

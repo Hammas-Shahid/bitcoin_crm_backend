@@ -5,19 +5,33 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { LeadCall } from './entities/lead-call.entity';
 import { User } from 'src/users/entities/user.entity';
+import { Note, NoteTypes } from 'src/notes/entities/note.entity';
+import { NotesService } from 'src/notes/notes.service';
 
 @Injectable()
 export class LeadCallsService {
   constructor(
     @InjectRepository(LeadCall)
     private leadCallRepository: Repository<LeadCall>,
+    private noteService: NotesService
   ) {}
 
+  
   async create(createLeadCallDto: CreateLeadCallDto, currentUser: User) {
-    return await this.leadCallRepository.save({
-      ...createLeadCallDto,
+    // Save the LeadCall entity
+    const leadCall = await this.leadCallRepository.save({
+      leadId: createLeadCallDto.leadId,
+      dispositionId: createLeadCallDto.dispositionId,
+      duration: createLeadCallDto.duration,
       created_by: currentUser.id,
     });
+
+    // Save the Note entity with the comment
+    if (createLeadCallDto.comment) {
+      await this.noteService.create({note: createLeadCallDto.comment, type: NoteTypes.Call_Note}, currentUser)
+    }
+
+    return leadCall;
   }
 
   findAll() {

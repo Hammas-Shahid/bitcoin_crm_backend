@@ -25,7 +25,16 @@ export class Note extends BasicEntity {
     @IsEnum(NoteTypes)
     type: NoteTypes;
 
-    @OneToOne(() => LeadCall, leadCall => leadCall.note)
+    @Column({nullable:true})
+    leadCallId: number;
+
+    @Column({nullable:true})
+    leadCallBackId: number;
+
+    @Column({nullable:true})
+    leadId: number
+
+    @OneToOne(() => LeadCall, leadCall => leadCall.note, {onDelete: 'CASCADE', onUpdate: 'CASCADE'})
     leadCall: LeadCall;
 
     @OneToOne(() => LeadCallBack, leadCallBack => leadCallBack.note)

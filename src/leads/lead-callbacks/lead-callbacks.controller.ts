@@ -24,6 +24,7 @@ export class LeadCallbacksController {
     return this.leadCallbacksService.create(createLeadCallbackDto, req.user);
   }
 
+
   @Get()
   findAll() {
     return this.leadCallbacksService.findAll();

@@ -22,14 +22,13 @@ export class NotesService {
     private callBackRepository: Repository<LeadCallBack>,
   ) {}
 
-  async create(createNoteDto: CreateNoteDto, currentUser: User) {
+  async create(createNoteDto: Partial<CreateNoteDto>, currentUser: User) {
     createNoteDto['created_by'] = currentUser.id;
-    const notes = await this.notesRepository.save(createNoteDto);
-    console.log(notes);
-    if (!notes) {
+    const note = await this.notesRepository.save(createNoteDto);
+    if (!note) {
       throw new HttpException('Error creating note', 500);
     }
-    return notes;
+    return note;
   }
 
   async getLeadNotes(leadId: number) {

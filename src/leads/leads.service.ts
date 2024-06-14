@@ -14,6 +14,8 @@ import {
   removeSpecialCharsFromString,
 } from 'src/shared/entities/functions/utils';
 import { LeadFiltersDto } from './leads.controller';
+import { NotesService } from 'src/notes/notes.service';
+import { NoteTypes } from 'src/notes/entities/note.entity';
 
 @Injectable()
 export class LeadsService {
@@ -22,6 +24,7 @@ export class LeadsService {
     private leadRepository: Repository<Lead>,
     private contactsService: ContactsService,
     private leadContactService: LeadContactsService,
+    private noteService: NotesService
   ) {}
 
   async create(createLeadDto: CreateLeadDto, currentUser: User) {
@@ -55,6 +58,14 @@ export class LeadsService {
         leadContacts: true,
       },
     });
+  }
+
+  async createLeadNote(note:string,leadId:number,currentUser: User){
+    await this.noteService.create({note: note,leadId:leadId, type: NoteTypes.Lead_Note}, currentUser)
+  }
+
+  async createSaleNote(note:string,leadId:number,currentUser: User){
+    await this.noteService.create({note: note,leadId:leadId, type: NoteTypes.Sale_Note}, currentUser)
   }
 
   async findAll() {
