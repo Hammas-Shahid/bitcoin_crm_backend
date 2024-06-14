@@ -10,9 +10,6 @@ export class LeadCall extends BasicEntity {
   duration: string;
 
   @Column()
-  comment: string;
-
-  @Column()
   dispositionId: number;
 
   @Column()

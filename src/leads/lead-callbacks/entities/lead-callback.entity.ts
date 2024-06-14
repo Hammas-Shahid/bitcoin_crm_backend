@@ -11,8 +11,6 @@ export class LeadCallBack extends BasicEntity {
   @Column()
   time: string;
 
-  @Column()
-  comment: string;
 
   @Column()
   leadId: number;
