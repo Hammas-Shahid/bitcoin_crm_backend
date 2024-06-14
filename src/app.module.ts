@@ -15,6 +15,7 @@ import { DispositionsModule } from './dispositions/dispositions.module';
 import { LeadsModule } from './leads/leads.module';
 import { ContactsModule } from './contacts/contacts.module';
 import { ServiceProvidersModule } from './service-providers/service-providers.module';
+import { NotesModule } from './notes/notes.module';
 
 @Module({
   imports: [
@@ -30,6 +31,7 @@ import { ServiceProvidersModule } from './service-providers/service-providers.mo
     LeadsModule,
     ContactsModule,
     ServiceProvidersModule,
+    NotesModule,
   ],
   controllers: [AppController],
   providers: [
