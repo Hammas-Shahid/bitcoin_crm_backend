@@ -151,8 +151,8 @@ export class LeadsService {
         status: true,
         businessType: true,
         assignee: true,
-        leadCalls: true,
-        leadContract: true
+        leadCalls: {note: true},
+        leadContract: true,
       },
       take: limit,
       skip: page * limit,
