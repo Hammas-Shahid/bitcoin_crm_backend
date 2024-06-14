@@ -28,7 +28,10 @@ export class User extends BasicEntity {
   failed_attempts: number;
 
   @OneToMany(() => Lead, (lead) => lead.assigneeId)
-  lead: Lead[];
+  leads: Lead[];
+  
+  @OneToMany(() => Lead, (lead) => lead.saleMadeById)
+  soldLeads: Lead[];
 
   @OneToMany(() => Disposition, (disposition) => disposition.created_by)
   dispositions: Disposition[];

@@ -5,7 +5,7 @@ export class PredefinedStates1718067999526 implements MigrationInterface {
   public async up(queryRunner: QueryRunner): Promise<void> {
     const statesRepository = queryRunner.manager.getRepository(State);
     let newStates = [];
-    for (let state of ['New', 'On Hold', 'Not Interested', 'Closed']) {
+    for (let state of ['New', 'In Progress', 'On Hold', 'Converted', 'Closed']) {
       newStates.push(createStateInstance(state));
     }
     await statesRepository.save(newStates);

@@ -10,44 +10,53 @@ import {
   ManyToOne,
   ManyToMany,
   OneToMany,
+  OneToOne,
 } from 'typeorm';
 import { LeadContact } from '../lead-contacts/entities/lead-contact.entity';
 import { LeadCall } from '../lead-calls/entities/lead-call.entity';
 import { LeadCallBack } from '../lead-callbacks/entities/lead-callback.entity';
+import { LeadContract } from '../lead-contracts/entities/lead-contract.entity';
 
 @Entity()
 export class Lead extends BasicEntity {
   @Column()
   businessName: string;
 
-  @Column()
+  @Column({nullable: true})
   businessTypeId: number;
 
   @Column({ unique: true })
   address: string;
 
-  @Column()
+  @Column({nullable: true})
   city: string;
 
+  @Column({nullable: true})
   state: string;
 
-  @Column()
+  @Column({nullable: true})
   zipCode: string;
 
   @Column()
   phoneNumber: string;
 
-  @Column()
+  @Column({nullable: true})
   email: string;
 
-  @Column()
+  @Column({nullable: true})
   assigneeId: number;
+
+  @Column({nullable: true})
+  statusId: number;
+  
+  @Column({nullable: true})
+  saleMadeById: number;
+  
+  @ManyToOne(() => User, { nullable: true })
+  saleMadeBy: User;
 
   @ManyToOne(() => User, { nullable: false })
   assignee: User;
-
-  @Column()
-  statusId: number;
 
   @OneToMany(() => LeadCall, (leadCall) => leadCall.lead)
   leadCalls: LeadCall[];
@@ -63,4 +72,7 @@ export class Lead extends BasicEntity {
 
   @OneToMany(() => LeadContact, (lc) => lc.lead)
   leadContacts: LeadContact[];
+
+  @OneToOne(() => LeadContract, leadContract => leadContract.lead)
+  leadContract: LeadContract;
 }

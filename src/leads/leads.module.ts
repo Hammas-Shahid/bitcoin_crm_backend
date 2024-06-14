@@ -8,9 +8,10 @@ import { ContactsModule } from 'src/contacts/contacts.module';
 import { LeadContactsModule } from './lead-contacts/lead-contacts.module';
 import { LeadCallbacksModule } from './lead-callbacks/lead-callbacks.module';
 import { LeadNotesModule } from './lead-notes/lead-notes.module';
+import { LeadContractsModule } from './lead-contracts/lead-contracts.module';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Lead]), LeadCallsModule, ContactsModule, LeadContactsModule, LeadCallbacksModule, LeadNotesModule],
+  imports: [TypeOrmModule.forFeature([Lead]), LeadCallsModule, ContactsModule, LeadContactsModule, LeadCallbacksModule, LeadNotesModule, LeadContractsModule],
   controllers: [LeadsController],
   providers: [LeadsService],
 })

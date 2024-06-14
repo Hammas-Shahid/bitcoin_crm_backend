@@ -6,7 +6,6 @@ export const removeSpecialCharsFromString = (value: string) => {
 };
 
 export const rawQuerySearchInRemovedSpecCharsString = (value: string) => {
-  value = value.replace(/[^a-zA-Z0-9]/g, '').toLowerCase();
   return Raw(
     (alias) =>
       `LOWER(REGEXP_REPLACE(${alias}, '[^a-zA-Z0-9]', '', 'g')) ILIKE :searchTerm`,
@@ -26,3 +25,13 @@ export const rawQuerySearchInRemovedSpacesFromString = (value: string) => {
     },
   );
 };
+
+export function convertEmptyStringsToNull<T extends object>(obj: T): T {
+  const result: any = { ...obj };
+  for (const key in result) {
+    if (result.hasOwnProperty(key) && result[key] === '') {
+      result[key] = null;
+    }
+  }
+  return result;
+}

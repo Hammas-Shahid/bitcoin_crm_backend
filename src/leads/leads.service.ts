@@ -1,13 +1,19 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { ILike, IsNull, Not, Raw, Repository } from 'typeorm';
 import { Lead } from './entities/lead.entity';
 import { CreateLeadDto } from './dto/create-lead.dto';
 import { UpdateLeadDto } from './dto/update-lead.dto';
 import { User } from 'src/users/entities/user.entity';
 import { ContactsService } from 'src/contacts/contacts.service';
 import { LeadContactsService } from './lead-contacts/lead-contacts.service';
-import { rawQuerySearchInRemovedSpacesFromString } from 'src/shared/entities/functions/utils';
+import {
+  convertEmptyStringsToNull,
+  rawQuerySearchInRemovedSpacesFromString,
+  rawQuerySearchInRemovedSpecCharsString,
+  removeSpecialCharsFromString,
+} from 'src/shared/entities/functions/utils';
+import { LeadFiltersDto } from './leads.controller';
 
 @Injectable()
 export class LeadsService {
@@ -53,6 +59,7 @@ export class LeadsService {
 
   async findAll() {
     return await this.leadRepository.find({
+      where: { saleMadeById: IsNull() },
       relations: {
         businessType: true,
         assignee: true,
@@ -64,7 +71,7 @@ export class LeadsService {
 
   async findOne(id: number) {
     const lead = await this.leadRepository.findOne({
-      where: { id },
+      where: { id, saleMadeById: IsNull() },
       relations: {
         businessType: true,
         assignee: true,
@@ -81,26 +88,88 @@ export class LeadsService {
   }
 
   /* Page Number Starts At 0 */
-  // async getFilteredLeads(searchString: string, page: number, limit: number) {
-  //   const results = await this.leadRepository.findAndCount({
-  //     where: [
-  //       { name: ILike(`%${searchString}%`) },
-  //       { email: ILike(`%${searchString}%`) },
-  //       { role: ILike(`%${searchString}%`) as any },
-  //     ],
-  //     take: limit,
-  //     skip: page * limit,
-  //   });
-  //   return { count: results[1], results: results[0] };
-  // }
+  async getFilteredLeads(filters: LeadFiltersDto, page: number, limit: number) {
+    filters.lastDisposition = +filters.lastDisposition
+    const queryBuilder = this.leadRepository.createQueryBuilder('lead')
+      .leftJoinAndSelect('lead.businessType', 'businessType')
+      .leftJoinAndSelect('lead.assignee', 'assignee')
+      .leftJoinAndSelect('lead.status', 'status')
+      .leftJoinAndSelect('lead.leadCalls', 'leadCall');
+
+      queryBuilder.andWhere('lead.saleMadeById ILIKE :saleMadeById', { saleMadeById: null });
+
+    if (filters.businessName) {
+      queryBuilder.andWhere('lead.businessName ILIKE :businessName', { businessName: `%${filters.businessName}%` });
+    }
+    if (filters.address) {
+      queryBuilder.andWhere('lead.address ILIKE :address', { address: `%${filters.address}%` });
+    }
+    if (filters.city) {
+      queryBuilder.andWhere('lead.city ILIKE :city', { city: `%${filters.city}%` });
+    }
+    if (filters.email) {
+      queryBuilder.andWhere('lead.email ILIKE :email', { email: `%${filters.email}%` });
+    }
+    if (filters.phoneNumber) {
+      queryBuilder.andWhere('lead.phoneNumber ILIKE :phoneNumber', { phoneNumber: `%${filters.phoneNumber}%` });
+    }
+    if (filters.businessTypeId) {
+      queryBuilder.andWhere('lead.businessTypeId = :businessTypeId', { businessTypeId: filters.businessTypeId });
+    }
+    if (filters.assigneeId) {
+      queryBuilder.andWhere('lead.assigneeId = :assigneeId', { assigneeId: filters.assigneeId });
+    }
+    if (filters.statusId) {
+      queryBuilder.andWhere('lead.statusId = :statusId', { statusId: filters.statusId });
+    }
+    if (filters.lastDisposition) {
+      console.log(filters.lastDisposition);
+
+      queryBuilder.andWhere(qb => {
+        const subQuery = qb.subQuery()
+          .select('lc.id')
+          .from('lead_call', 'lc')
+          .where('lc.leadId = lead.id')
+          .andWhere('lc.dispositionId = :lastDisposition')
+          .orderBy('lc.created_at', 'DESC')
+          .limit(1)
+          .getQuery();
+        return `EXISTS (${subQuery})`;
+      }, { lastDisposition: filters.lastDisposition });
+    }
+
+    queryBuilder.take(limit).skip(page * limit);
+
+    const [results, count] = await queryBuilder.getManyAndCount();
+    return { count, results };
+  }
 
   async getPaginatedLeads(page: number, limit: number) {
     const results = await this.leadRepository.findAndCount({
+      where: { saleMadeById: IsNull() },
       relations: {
         status: true,
         businessType: true,
         assignee: true,
         leadCalls: true,
+        leadContract: true
+      },
+      take: limit,
+      skip: page * limit,
+      order: { created_at: 'DESC' },
+    });
+    return { count: results[1], results: results[0] };
+  }
+
+  async getPaginatedSales(page: number, limit: number) {
+    const results = await this.leadRepository.findAndCount({
+      where: { saleMadeById: Not(IsNull()) },
+      relations: {
+        status: true,
+        businessType: true,
+        assignee: true,
+        leadCalls: true,
+        leadContract: true
       },
       take: limit,
       skip: page * limit,

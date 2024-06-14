@@ -1,0 +1,42 @@
+import { MigrationInterface, QueryRunner } from "typeorm";
+
+export class LeadContractEntity1718333028117 implements MigrationInterface {
+    name = 'LeadContractEntity1718333028117'
+
+    public async up(queryRunner: QueryRunner): Promise<void> {
+        await queryRunner.query(`CREATE TABLE "lead_contract" ("id" SERIAL NOT NULL, "created_at" TIMESTAMP NOT NULL DEFAULT now(), "created_by" integer NOT NULL DEFAULT '1', "updated_by" integer, "updated_at" TIMESTAMP NOT NULL DEFAULT now(), "deleted_at" TIMESTAMP, "rate" character varying NOT NULL, "durationInDays" integer NOT NULL, "signedDate" character varying NOT NULL, "scheduleDate" character varying NOT NULL, "installationDate" character varying NOT NULL, "leadId" integer NOT NULL, CONSTRAINT "PK_b97e6e8a19fbb28bfc475072146" PRIMARY KEY ("id"))`);
+        await queryRunner.query(`ALTER TABLE "lead" ADD "saleMadeById" integer`);
+        await queryRunner.query(`ALTER TABLE "lead" DROP CONSTRAINT "FK_1105241a7fe81d294844feace28"`);
+        await queryRunner.query(`ALTER TABLE "lead" DROP CONSTRAINT "FK_a5fa2df0cee6769fa270a4b0d8f"`);
+        await queryRunner.query(`ALTER TABLE "lead" DROP CONSTRAINT "FK_a1589d9589bfb0380ea2be6f84d"`);
+        await queryRunner.query(`ALTER TABLE "lead" ALTER COLUMN "businessTypeId" DROP NOT NULL`);
+        await queryRunner.query(`ALTER TABLE "lead" ALTER COLUMN "city" DROP NOT NULL`);
+        await queryRunner.query(`ALTER TABLE "lead" ALTER COLUMN "zipCode" DROP NOT NULL`);
+        await queryRunner.query(`ALTER TABLE "lead" ALTER COLUMN "email" DROP NOT NULL`);
+        await queryRunner.query(`ALTER TABLE "lead" ALTER COLUMN "assigneeId" DROP NOT NULL`);
+        await queryRunner.query(`ALTER TABLE "lead" ALTER COLUMN "statusId" DROP NOT NULL`);
+        await queryRunner.query(`ALTER TABLE "lead" ADD CONSTRAINT "FK_c80a9e90c20d68a23f92fd439ff" FOREIGN KEY ("saleMadeById") REFERENCES "user"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`);
+        await queryRunner.query(`ALTER TABLE "lead" ADD CONSTRAINT "FK_a5fa2df0cee6769fa270a4b0d8f" FOREIGN KEY ("assigneeId") REFERENCES "user"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`);
+        await queryRunner.query(`ALTER TABLE "lead" ADD CONSTRAINT "FK_1105241a7fe81d294844feace28" FOREIGN KEY ("businessTypeId") REFERENCES "business_type"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`);
+        await queryRunner.query(`ALTER TABLE "lead" ADD CONSTRAINT "FK_a1589d9589bfb0380ea2be6f84d" FOREIGN KEY ("statusId") REFERENCES "statuses"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`);
+    }
+
+    public async down(queryRunner: QueryRunner): Promise<void> {
+        await queryRunner.query(`ALTER TABLE "lead" DROP CONSTRAINT "FK_a1589d9589bfb0380ea2be6f84d"`);
+        await queryRunner.query(`ALTER TABLE "lead" DROP CONSTRAINT "FK_1105241a7fe81d294844feace28"`);
+        await queryRunner.query(`ALTER TABLE "lead" DROP CONSTRAINT "FK_a5fa2df0cee6769fa270a4b0d8f"`);
+        await queryRunner.query(`ALTER TABLE "lead" DROP CONSTRAINT "FK_c80a9e90c20d68a23f92fd439ff"`);
+        await queryRunner.query(`ALTER TABLE "lead" ALTER COLUMN "statusId" SET NOT NULL`);
+        await queryRunner.query(`ALTER TABLE "lead" ALTER COLUMN "assigneeId" SET NOT NULL`);
+        await queryRunner.query(`ALTER TABLE "lead" ALTER COLUMN "email" SET NOT NULL`);
+        await queryRunner.query(`ALTER TABLE "lead" ALTER COLUMN "zipCode" SET NOT NULL`);
+        await queryRunner.query(`ALTER TABLE "lead" ALTER COLUMN "city" SET NOT NULL`);
+        await queryRunner.query(`ALTER TABLE "lead" ALTER COLUMN "businessTypeId" SET NOT NULL`);
+        await queryRunner.query(`ALTER TABLE "lead" ADD CONSTRAINT "FK_a1589d9589bfb0380ea2be6f84d" FOREIGN KEY ("statusId") REFERENCES "statuses"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`);
+        await queryRunner.query(`ALTER TABLE "lead" ADD CONSTRAINT "FK_a5fa2df0cee6769fa270a4b0d8f" FOREIGN KEY ("assigneeId") REFERENCES "user"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`);
+        await queryRunner.query(`ALTER TABLE "lead" ADD CONSTRAINT "FK_1105241a7fe81d294844feace28" FOREIGN KEY ("businessTypeId") REFERENCES "business_type"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`);
+        await queryRunner.query(`ALTER TABLE "lead" DROP COLUMN "saleMadeById"`);
+        await queryRunner.query(`DROP TABLE "lead_contract"`);
+    }
+
+}

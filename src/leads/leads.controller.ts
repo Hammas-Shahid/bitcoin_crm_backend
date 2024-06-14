@@ -35,6 +35,11 @@ export class LeadsController {
   getPaginatedLeads(@Body() body: { pageIndex: number; limit: number }) {
     return this.leadsService.getPaginatedLeads(body.pageIndex, body.limit);
   }
+  
+  @Post('filtered-leads')
+  getFilteredLeads(@Body() body: { leadFiltersDto: LeadFiltersDto ,pageIndex: number; limit: number }) {
+    return this.leadsService.getFilteredLeads(body.leadFiltersDto, body.pageIndex, body.limit);
+  }
 
   @Patch(':leadId/assignee/:assigneeId')
   updateLeadAssignee(
@@ -59,4 +64,17 @@ export class LeadsController {
   addressExists(@Body() body: { address: string }) {
     return this.leadsService.addressExists(body.address);
   }
+}
+
+export interface LeadFiltersDto{
+  businessName: string;
+  address: string;
+  city: string;
+  state: string;
+  email: string;
+  phoneNumber: string;
+  businessTypeId: number;
+  assigneeId: number;
+  statusId: number;
+  lastDisposition: number;
 }
