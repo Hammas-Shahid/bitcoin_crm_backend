@@ -4,17 +4,17 @@ import { BasicEntity } from "src/shared/entities/base-entity";
 import { Column, Entity, JoinColumn, ManyToOne, OneToOne } from "typeorm";
 
 @Entity()
-export class LeadNote extends BasicEntity{
+export class SaleNote extends BasicEntity{
     @Column()
-    leadId: number;
+    saleId: number;
 
     @Column()
     noteId: number;
 
-    @ManyToOne(()=> Lead, l=> l.leadNotes, {onDelete: 'CASCADE', onUpdate: 'CASCADE'})
-    lead: Lead;
+    @ManyToOne(()=> Lead, s=> s.saleNotes, {onDelete: 'CASCADE', onUpdate: 'CASCADE'})
+    sale: Lead;
 
-    @OneToOne(()=> Note, note=> note.leadNote, {onDelete: 'CASCADE', onUpdate: 'CASCADE'})
+    @OneToOne(()=> Note, note=> note.saleNote, {onDelete: 'CASCADE', onUpdate: 'CASCADE'})
     @JoinColumn()
     note: Note;
 }

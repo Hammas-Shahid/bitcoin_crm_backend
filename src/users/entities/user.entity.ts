@@ -26,19 +26,19 @@ export class User extends BasicEntity {
   @Column({ default: 0 })
   failed_attempts: number;
 
-  @OneToMany(() => Lead, (lead) => lead.assigneeId)
-  lead: Lead[];
+  @OneToMany(() => Lead, (lead) => lead.assignee)
+  leads: Lead[];
 
-  @OneToMany(() => Disposition, (disposition) => disposition.created_by)
+  @OneToMany(() => Disposition, (disposition) => disposition.user)
   dispositions: Disposition[];
 
-  @OneToMany(() => BusinessType, (businessType) => businessType.created_by)
+  @OneToMany(() => BusinessType, (businessType) => businessType.user)
   businessTypes: BusinessType[];
 
-  @OneToMany(() => ServiceProvider, (provider) => provider.created_by)
+  @OneToMany(() => ServiceProvider, (provider) => provider.user)
   serviceProviders: ServiceProvider[];
 
-  @OneToMany(() => Status, (status) => status.created_by)
+  @OneToMany(() => Status, (status) => status.user)
   statuses: Status[];
 }
 

@@ -1,8 +1,8 @@
 import { IsNumber, IsString } from "class-validator";
 
-export class CreateLeadNoteDto {
+export class CreateSaleNoteDto {
     @IsNumber()
-    leadId: number;
+    saleId: number;
 
     @IsString()
     content: string;

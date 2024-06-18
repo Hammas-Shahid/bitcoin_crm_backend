@@ -8,6 +8,7 @@ import { User } from 'src/users/entities/user.entity';
 import { ContactsService } from 'src/contacts/contacts.service';
 import { LeadContactsService } from './lead-contacts/lead-contacts.service';
 import { rawQuerySearchInRemovedSpacesFromString } from 'src/shared/entities/functions/utils';
+import { NotesService } from 'src/notes/notes.service';
 
 @Injectable()
 export class LeadsService {
@@ -100,7 +101,7 @@ export class LeadsService {
         status: true,
         businessType: true,
         assignee: true,
-        leadCalls: {comment: true},
+        leadCalls: true,
       },
       take: limit,
       skip: page * limit,
@@ -176,9 +177,8 @@ export class LeadsService {
         `LeadContact with lead ID ${leadId} and contact ID ${contactId} not found`,
       );
     }
-
     await this.leadContactService.remove(leadContact.id);
-
     return await this.findOne(leadId);
   }
+
 }

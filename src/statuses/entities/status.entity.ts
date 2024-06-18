@@ -18,8 +18,8 @@ export class Status extends BasicEntity {
   })
   state: State;
 
-  @OneToMany(() => Lead, (lead) => lead.statusId)
-  lead: Lead;
+  @OneToMany(() => Lead, (lead) => lead.status)
+  leads: Lead[];
 
   @ManyToOne(() => User, (user) => user.statuses, {
     onDelete: 'CASCADE',

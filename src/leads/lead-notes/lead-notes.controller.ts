@@ -8,8 +8,8 @@ export class LeadNotesController {
   constructor(private readonly leadNotesService: LeadNotesService) {}
 
   @Post()
-  create(@Body() createLeadNoteDto: CreateLeadNoteDto) {
-    return this.leadNotesService.create(createLeadNoteDto);
+  create(@Body() createLeadNoteDto: CreateLeadNoteDto, @Req() req: any) {
+    return this.leadNotesService.create(createLeadNoteDto, req.user);
   }
 
   @Get()

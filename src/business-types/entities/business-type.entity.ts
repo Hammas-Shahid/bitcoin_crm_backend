@@ -8,8 +8,8 @@ export class BusinessType extends BasicEntity {
   @Column({ unique: true })
   name: string;
 
-  @OneToMany(() => Lead, (lead) => lead.businessTypeId)
-  lead: Lead;
+  @OneToMany(() => Lead, (lead) => lead.businessType)
+  leads: Lead[];
 
   @ManyToOne(() => User, (user) => user.businessTypes, {
     onDelete: 'CASCADE',

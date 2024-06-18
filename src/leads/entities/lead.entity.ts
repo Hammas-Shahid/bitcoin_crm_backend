@@ -14,6 +14,8 @@ import {
 import { LeadContact } from '../lead-contacts/entities/lead-contact.entity';
 import { LeadCall } from '../lead-calls/entities/lead-call.entity';
 import { LeadCallBack } from '../lead-callbacks/entities/lead-callback.entity';
+import { LeadNote } from '../lead-notes/entities/lead-note.entity';
+import { SaleNote } from '../sale-notes/entities/sale-note.entity';
 
 @Entity()
 export class Lead extends BasicEntity {
@@ -43,7 +45,7 @@ export class Lead extends BasicEntity {
   @Column()
   assigneeId: number;
 
-  @ManyToOne(() => User, { nullable: false })
+  @ManyToOne(() => User, assignee=> assignee.leads,{ nullable: false })
   assignee: User;
 
   @Column()
@@ -55,12 +57,18 @@ export class Lead extends BasicEntity {
   @OneToMany(() => LeadCallBack, (leadCallBack) => leadCallBack.lead)
   leadCallBacks: LeadCallBack[];
 
-  @ManyToOne(() => BusinessType, { nullable: false })
+  @ManyToOne(() => BusinessType, businessType=> businessType.leads, { nullable: false })
   businessType: BusinessType;
 
-  @ManyToOne(() => Status, { nullable: false })
+  @ManyToOne(() => Status, status=> status.leads, { nullable: false })
   status: Status;
 
   @OneToMany(() => LeadContact, (lc) => lc.lead)
   leadContacts: LeadContact[];
+
+  @OneToMany(()=> LeadNote, ln=> ln.lead)
+  leadNotes: LeadNote[]
+
+  @OneToMany(()=> SaleNote, sn=> sn.sale)
+  saleNotes: SaleNote[]
 }
