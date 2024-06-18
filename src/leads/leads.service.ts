@@ -100,7 +100,7 @@ export class LeadsService {
         status: true,
         businessType: true,
         assignee: true,
-        leadCalls: true,
+        leadCalls: {comment: true},
       },
       take: limit,
       skip: page * limit,

@@ -1,15 +1,13 @@
 import { Disposition } from 'src/dispositions/entities/disposition.entity';
 import { Lead } from 'src/leads/entities/lead.entity';
+import { Note } from 'src/notes/entities/note.entity';
 import { BasicEntity } from 'src/shared/entities/base-entity';
-import { Column, Entity, ManyToOne } from 'typeorm';
+import { Column, Entity, JoinColumn, ManyToOne, OneToOne } from 'typeorm';
 
 @Entity()
 export class LeadCall extends BasicEntity {
   @Column()
   duration: string;
-
-  @Column()
-  comment: string;
 
   @Column()
   dispositionId: number;
@@ -34,4 +32,11 @@ export class LeadCall extends BasicEntity {
     },
   )
   disposition: Disposition;
+
+  @Column({nullable: true})
+  commentId: number
+
+  @OneToOne(()=> Note, note=> note.leadCall)
+  @JoinColumn()
+  comment: Note;
 }
