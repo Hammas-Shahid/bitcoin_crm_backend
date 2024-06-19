@@ -1,14 +1,15 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { IsNull, Not, Repository } from 'typeorm';
 import { Lead } from './entities/lead.entity';
 import { CreateLeadDto } from './dto/create-lead.dto';
 import { UpdateLeadDto } from './dto/update-lead.dto';
-import { User } from 'src/users/entities/user.entity';
+import { User, UserRoles } from 'src/users/entities/user.entity';
 import { ContactsService } from 'src/contacts/contacts.service';
 import { LeadContactsService } from './lead-contacts/lead-contacts.service';
 import { rawQuerySearchInRemovedSpacesFromString } from 'src/shared/entities/functions/utils';
-import { NotesService } from 'src/notes/notes.service';
+import { StatesService } from 'src/states/states.service';
+import { StatusesService } from 'src/statuses/statuses.service';
 
 @Injectable()
 export class LeadsService {
@@ -17,6 +18,8 @@ export class LeadsService {
     private leadRepository: Repository<Lead>,
     private contactsService: ContactsService,
     private leadContactService: LeadContactsService,
+    private stateService: StatesService,
+    private statusService: StatusesService
   ) {}
 
   async create(createLeadDto: CreateLeadDto, currentUser: User) {
@@ -110,6 +113,38 @@ export class LeadsService {
     return { count: results[1], results: results[0] };
   }
 
+  async getPaginatedUnassignedLeads(page: number, limit: number) {
+    const results = await this.leadRepository.findAndCount({
+      where: {assigneeId: IsNull()},
+      relations: {
+        status: true,
+        businessType: true,
+        assignee: true,
+        leadCalls: true,
+      },
+      take: limit,
+      skip: page * limit,
+      order: { created_at: 'DESC' },
+    });
+    return { count: results[1], results: results[0] };
+  }
+
+  async getPaginatedAssignedLeads(page: number, limit: number) {
+    const results = await this.leadRepository.findAndCount({
+      where: {assigneeId: Not(IsNull())},
+      relations: {
+        status: true,
+        businessType: true,
+        assignee: true,
+        leadCalls: true,
+      },
+      take: limit,
+      skip: page * limit,
+      order: { created_at: 'DESC' },
+    });
+    return { count: results[1], results: results[0] };
+  }
+
   async update(id: number, updateLeadDto: UpdateLeadDto, currentUser: User) {
     const lead = await this.leadRepository.preload({
       id,
@@ -129,9 +164,29 @@ export class LeadsService {
     assigneeId: number,
     currentUser: User,
   ) {
+    if (currentUser.role !== UserRoles.Admin){
+      throw new UnauthorizedException()
+    }
     await this.leadRepository.update(
       { id: leadId },
       { assigneeId, updated_by: currentUser.id },
+    );
+    return { message: 'Success' };
+  }
+  
+  async updateLeadStatus(
+    leadId: number,
+    statusId: number,
+    currentUser: User,
+  ) {    
+    const status = await this.statusService.getStatusWithState(statusId);
+    const statusState = status.state;    
+    if (statusState.name === 'On Hold'){      
+      await this.update(leadId, {assigneeId: null}, currentUser)
+    }
+    await this.leadRepository.update(
+      { id: leadId },
+      { statusId, updated_by: currentUser.id },
     );
     return { message: 'Success' };
   }

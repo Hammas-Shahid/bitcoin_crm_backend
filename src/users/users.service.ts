@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -13,6 +13,9 @@ export class UsersService {
   ) {}
 
   async create(createUserDto: CreateUserDto, currentUser: User) {
+    if (currentUser.role !== UserRoles.Admin) {
+      throw new UnauthorizedException();
+    }
     createUserDto.password = await bcrypt.hash(createUserDto.password, 10);
     createUserDto['created_by'] = currentUser.id;
     let savedUser = await this.userRepository.save(createUserDto);
@@ -62,6 +65,10 @@ export class UsersService {
     return await this.userRepository.exists({
       where: { email: ILike(`%${email}%`) },
     });
+  }
+
+  async clearFailedAttempts(id: number){
+    await this.userRepository.update(id, {failed_attempts: 0});
   }
 
   async findOneForLogin(id: number): Promise<User | undefined> {

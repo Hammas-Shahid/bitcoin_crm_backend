@@ -35,6 +35,16 @@ export class LeadsController {
   getPaginatedLeads(@Body() body: { pageIndex: number; limit: number }) {
     return this.leadsService.getPaginatedLeads(body.pageIndex, body.limit);
   }
+  
+  @Post('paginated-unassigned-leads')
+  getPaginatedUnassignedLeads(@Body() body: { pageIndex: number; limit: number }) {
+    return this.leadsService.getPaginatedUnassignedLeads(body.pageIndex, body.limit);
+  }
+  
+  @Post('paginated-assigned-leads')
+  getPaginatedAssignedLeads(@Body() body: { pageIndex: number; limit: number }) {
+    return this.leadsService.getPaginatedAssignedLeads(body.pageIndex, body.limit);
+  }
 
   @Patch(':leadId/assignee/:assigneeId')
   updateLeadAssignee(
@@ -43,6 +53,15 @@ export class LeadsController {
     @Req() req: any
   ) {
     return this.leadsService.updateLeadAssignee(+leadId, +assigneeId, req.user);
+  }
+  
+  @Patch(':leadId/status/:statusId')
+  updateLeadStatus(
+    @Param('leadId') leadId: string,
+    @Param('statusId') statusId: string,
+    @Req() req: any
+  ) {
+    return this.leadsService.updateLeadStatus(+leadId, +statusId, req.user);
   }
 
   @Patch(':id')

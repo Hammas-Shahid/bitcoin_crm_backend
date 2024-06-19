@@ -59,7 +59,7 @@ export class DispositionsController {
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.dispositionService.remove(+id);
+  remove(@Param('id') id: string, @Req() req: any) {
+    return this.dispositionService.remove(+id, req.user);
   }
 }

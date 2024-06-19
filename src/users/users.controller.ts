@@ -20,9 +20,6 @@ export class UsersController {
 
   @Post()
   create(@Req() req: any, @Body() createUserDto: CreateUserDto) {
-    if (req.body.user.role !== UserRoles.Admin) {
-      throw new UnauthorizedException();
-    }
     return this.usersService.create(createUserDto, req.user);
   }
 

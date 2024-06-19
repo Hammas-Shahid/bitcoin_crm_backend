@@ -1,10 +1,10 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ILike, Repository } from 'typeorm';
 import { CreateDispositionDto } from './dto/create-disposition.dto';
 import { UpdateDispositionDto } from './dto/update-disposition.dto';
 import { Disposition } from './entities/disposition.entity';
-import { User } from 'src/users/entities/user.entity';
+import { User, UserRoles } from 'src/users/entities/user.entity';
 import { rawQuerySearchInRemovedSpacesFromString } from 'src/shared/entities/functions/utils';
 
 @Injectable()
@@ -15,6 +15,9 @@ export class DispositionsService {
   ) {}
 
   async create(createDispositionDto: CreateDispositionDto, currentUser: User) {
+    if (currentUser.role !== UserRoles.Admin){
+      throw new UnauthorizedException()
+    }
     return await this.dispositionRepository.save({
       ...createDispositionDto,
       created_by: currentUser.id,
@@ -68,6 +71,9 @@ export class DispositionsService {
     updateDispositionDto: UpdateDispositionDto,
     currentUser: User,
   ) {
+    if (currentUser.role !== UserRoles.Admin){
+      throw new UnauthorizedException()
+    }
     const disposition = await this.dispositionRepository.preload({
       id,
       ...updateDispositionDto,
@@ -79,7 +85,10 @@ export class DispositionsService {
     return await this.dispositionRepository.save(disposition);
   }
 
-  async remove(id: number) {
+  async remove(id: number, currentUser: User) {
+    if (currentUser.role !== UserRoles.Admin){
+      throw new UnauthorizedException()
+    }
     const disposition = await this.findOne(id);
     return await this.dispositionRepository.remove(disposition);
   }

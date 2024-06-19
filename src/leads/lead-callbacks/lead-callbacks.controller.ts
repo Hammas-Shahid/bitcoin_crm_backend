@@ -24,9 +24,9 @@ export class LeadCallbacksController {
     return this.leadCallbacksService.create(createLeadCallbackDto, req.user);
   }
 
-  @Get()
-  findAll() {
-    return this.leadCallbacksService.findAll();
+  @Get('by-lead/:leadId')
+  findAll(@Param('leadId') leadId: string) {
+    return this.leadCallbacksService.findAllByLeadId(+leadId);
   }
 
   @Get(':id')

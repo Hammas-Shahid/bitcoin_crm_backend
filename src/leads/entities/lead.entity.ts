@@ -28,28 +28,29 @@ export class Lead extends BasicEntity {
   @Column({ unique: true })
   address: string;
 
-  @Column()
+  @Column({nullable: true})
   city: string;
 
+  @Column({nullable: true})
   state: string;
 
-  @Column()
+  @Column({nullable: true})
   zipCode: string;
 
   @Column()
   phoneNumber: string;
 
-  @Column()
+  @Column({nullable: true})
   email: string;
 
-  @Column()
+  @Column({nullable: true})
   assigneeId: number;
 
-  @ManyToOne(() => User, assignee=> assignee.leads,{ nullable: false })
-  assignee: User;
-
-  @Column()
+  @Column({nullable: true})
   statusId: number;
+
+  @ManyToOne(() => User, assignee=> assignee.leads,{ nullable: false, onDelete: 'SET NULL', onUpdate: 'CASCADE' })
+  assignee: User;
 
   @OneToMany(() => LeadCall, (leadCall) => leadCall.lead)
   leadCalls: LeadCall[];

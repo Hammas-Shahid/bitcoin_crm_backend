@@ -1,11 +1,11 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ILike, Repository } from 'typeorm';
 import { CreateStatusDto } from './dto/create-status.dto';
 import { UpdateStatusDto } from './dto/update-status.dto';
 import { Status } from './entities/status.entity';
 import { StatesService } from 'src/states/states.service';
-import { User } from 'src/users/entities/user.entity';
+import { User, UserRoles } from 'src/users/entities/user.entity';
 import { rawQuerySearchInRemovedSpacesFromString } from 'src/shared/entities/functions/utils';
 
 @Injectable()
@@ -17,6 +17,9 @@ export class StatusesService {
   ) {}
 
   async create(createStatusDto: CreateStatusDto, currentUser: User) {
+    if (currentUser.role !== UserRoles.Admin){
+      throw new UnauthorizedException()
+    }
     const state = await this.stateService.findOne(createStatusDto.stateId);
     if (!state) {
       throw new NotFoundException(
@@ -41,6 +44,10 @@ export class StatusesService {
       throw new NotFoundException(`Status with ID ${id} not found`);
     }
     return status;
+  }
+
+  async getStatusWithState(id: number){
+    return await this.statusRepository.findOne({where: {id}, relations: {state: true}});
   }
 
   /* Page Number Starts At 0 */

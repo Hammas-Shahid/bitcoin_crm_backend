@@ -22,7 +22,7 @@ export class Status extends BasicEntity {
   leads: Lead[];
 
   @ManyToOne(() => User, (user) => user.statuses, {
-    onDelete: 'CASCADE',
+    onDelete: 'SET NULL',
     onUpdate: 'CASCADE',
   })
   @JoinColumn({ name: 'created_by' })

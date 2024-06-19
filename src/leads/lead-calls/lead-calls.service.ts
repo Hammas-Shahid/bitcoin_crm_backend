@@ -1,21 +1,29 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { CreateLeadCallDto } from './dto/create-lead-call.dto';
 import { UpdateLeadCallDto } from './dto/update-lead-call.dto';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { DataSource, Repository } from 'typeorm';
 import { LeadCall } from './entities/lead-call.entity';
 import { User } from 'src/users/entities/user.entity';
 import { NotesService } from 'src/notes/notes.service';
+import { Lead } from '../entities/lead.entity';
+import { State } from 'src/states/entities/state.entity';
 
 @Injectable()
 export class LeadCallsService {
   constructor(
     @InjectRepository(LeadCall)
     private leadCallRepository: Repository<LeadCall>,
-    private notesService: NotesService
+    private notesService: NotesService,
+    private dataSource: DataSource
   ) {}
 
   async create(createLeadCallDto: CreateLeadCallDto, currentUser: User) {
+    const closedState = this.dataSource.manager.findOne(State, {where: {name: 'Closed'}});
+    const leadStateClosed = await this.dataSource.manager.exists(Lead, {where: {id: createLeadCallDto.leadId, status: {stateId: (await closedState).id}}});
+    if (leadStateClosed){
+      throw new BadRequestException("Calls cannot be made on leads with a closed state.");
+    }
     const {comment, ...createLeadCall } = createLeadCallDto;
     let savedComment = null;
     let commentId = null;
