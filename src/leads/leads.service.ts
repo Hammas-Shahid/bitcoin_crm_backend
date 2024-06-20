@@ -109,6 +109,7 @@ export class LeadsService {
         businessType: true,
         assignee: true,
         leadCalls: true,
+        leadContacts: { contact: true },
       },
       take: limit,
       skip: page * limit,
