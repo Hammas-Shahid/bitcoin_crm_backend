@@ -25,7 +25,7 @@ export class AuthInterceptor implements NestInterceptor {
         req.res.status(401).send({ message: 'Unauthorized: User is disabled' });
         return of(null);
       }
-      req.body['user'] = currentUser;
+      req['user'] = currentUser;
     }
 
     return next.handle();

@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { IsNull, Not, Repository } from 'typeorm';
 import { Lead } from './entities/lead.entity';
@@ -18,8 +22,7 @@ export class LeadsService {
     private leadRepository: Repository<Lead>,
     private contactsService: ContactsService,
     private leadContactService: LeadContactsService,
-    private stateService: StatesService,
-    private statusService: StatusesService
+    private statusService: StatusesService,
   ) {}
 
   async create(createLeadDto: CreateLeadDto, currentUser: User) {
@@ -100,6 +103,7 @@ export class LeadsService {
 
   async getPaginatedLeads(page: number, limit: number) {
     const results = await this.leadRepository.findAndCount({
+      where: { saleInfo: IsNull() },
       relations: {
         status: true,
         businessType: true,
@@ -115,7 +119,7 @@ export class LeadsService {
 
   async getPaginatedUnassignedLeads(page: number, limit: number) {
     const results = await this.leadRepository.findAndCount({
-      where: {assigneeId: IsNull()},
+      where: { assigneeId: IsNull(), saleInfo: IsNull() },
       relations: {
         status: true,
         businessType: true,
@@ -131,7 +135,23 @@ export class LeadsService {
 
   async getPaginatedAssignedLeads(page: number, limit: number) {
     const results = await this.leadRepository.findAndCount({
-      where: {assigneeId: Not(IsNull())},
+      where: { assigneeId: Not(IsNull()), saleInfo: IsNull() },
+      relations: {
+        status: true,
+        businessType: true,
+        assignee: true,
+        leadCalls: true,
+      },
+      take: limit,
+      skip: page * limit,
+      order: { created_at: 'DESC' },
+    });
+    return { count: results[1], results: results[0] };
+  }
+
+  async getPaginatedSales(page: number, limit: number) {
+    const results = await this.leadRepository.findAndCount({
+      where: { saleInfo: Not(IsNull()) },
       relations: {
         status: true,
         businessType: true,
@@ -164,8 +184,8 @@ export class LeadsService {
     assigneeId: number,
     currentUser: User,
   ) {
-    if (currentUser.role !== UserRoles.Admin){
-      throw new UnauthorizedException()
+    if (currentUser.role !== UserRoles.Admin) {
+      throw new UnauthorizedException();
     }
     await this.leadRepository.update(
       { id: leadId },
@@ -173,16 +193,12 @@ export class LeadsService {
     );
     return { message: 'Success' };
   }
-  
-  async updateLeadStatus(
-    leadId: number,
-    statusId: number,
-    currentUser: User,
-  ) {    
+
+  async updateLeadStatus(leadId: number, statusId: number, currentUser: User) {
     const status = await this.statusService.getStatusWithState(statusId);
-    const statusState = status.state;    
-    if (statusState.name === 'On Hold'){      
-      await this.update(leadId, {assigneeId: null}, currentUser)
+    const statusState = status.state;
+    if (statusState.name === 'On Hold') {
+      await this.update(leadId, { assigneeId: null }, currentUser);
     }
     await this.leadRepository.update(
       { id: leadId },
@@ -235,5 +251,4 @@ export class LeadsService {
     await this.leadContactService.remove(leadContact.id);
     return await this.findOne(leadId);
   }
-
 }

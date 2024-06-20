@@ -67,8 +67,8 @@ export class UsersService {
     });
   }
 
-  async clearFailedAttempts(id: number){
-    await this.userRepository.update(id, {failed_attempts: 0});
+  async clearFailedAttempts(id: number) {
+    await this.userRepository.update(id, { failed_attempts: 0 });
   }
 
   async findOneForLogin(id: number): Promise<User | undefined> {
@@ -104,7 +104,11 @@ export class UsersService {
     if (currentUser.role !== UserRoles.Admin && updateUserDto.password) {
       delete updateUserDto.password;
     }
-    const user = await this.userRepository.preload({ id, ...updateUserDto, updated_by: currentUser.id });
+    const user = await this.userRepository.preload({
+      id,
+      ...updateUserDto,
+      updated_by: currentUser.id,
+    });
 
     if (!user) {
       throw new Error('User not found');

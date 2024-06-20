@@ -35,37 +35,56 @@ export class LeadsController {
   getPaginatedLeads(@Body() body: { pageIndex: number; limit: number }) {
     return this.leadsService.getPaginatedLeads(body.pageIndex, body.limit);
   }
-  
-  @Post('paginated-unassigned-leads')
-  getPaginatedUnassignedLeads(@Body() body: { pageIndex: number; limit: number }) {
-    return this.leadsService.getPaginatedUnassignedLeads(body.pageIndex, body.limit);
+
+  @Post('paginated-sales')
+  getPaginatedSales(@Body() body: { pageIndex: number; limit: number }) {
+    return this.leadsService.getPaginatedSales(body.pageIndex, body.limit);
   }
-  
+
+  @Post('paginated-unassigned-leads')
+  getPaginatedUnassignedLeads(
+    @Body() body: { pageIndex: number; limit: number },
+  ) {
+    return this.leadsService.getPaginatedUnassignedLeads(
+      body.pageIndex,
+      body.limit,
+    );
+  }
+
   @Post('paginated-assigned-leads')
-  getPaginatedAssignedLeads(@Body() body: { pageIndex: number; limit: number }) {
-    return this.leadsService.getPaginatedAssignedLeads(body.pageIndex, body.limit);
+  getPaginatedAssignedLeads(
+    @Body() body: { pageIndex: number; limit: number },
+  ) {
+    return this.leadsService.getPaginatedAssignedLeads(
+      body.pageIndex,
+      body.limit,
+    );
   }
 
   @Patch(':leadId/assignee/:assigneeId')
   updateLeadAssignee(
     @Param('leadId') leadId: string,
     @Param('assigneeId') assigneeId: string,
-    @Req() req: any
+    @Req() req: any,
   ) {
     return this.leadsService.updateLeadAssignee(+leadId, +assigneeId, req.user);
   }
-  
+
   @Patch(':leadId/status/:statusId')
   updateLeadStatus(
     @Param('leadId') leadId: string,
     @Param('statusId') statusId: string,
-    @Req() req: any
+    @Req() req: any,
   ) {
     return this.leadsService.updateLeadStatus(+leadId, +statusId, req.user);
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateLeadDto: UpdateLeadDto, @Req() req: any) {
+  update(
+    @Param('id') id: string,
+    @Body() updateLeadDto: UpdateLeadDto,
+    @Req() req: any,
+  ) {
     return this.leadsService.update(+id, updateLeadDto, req.user);
   }
 

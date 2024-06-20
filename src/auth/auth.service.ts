@@ -29,7 +29,7 @@ export class AuthService {
       throw new InvalidPasswordException();
     }
     if (!user.is_active) throw new UserStatusException();
-    if (user.failed_attempts>0){
+    if (user.failed_attempts > 0) {
       await this.usersService.clearFailedAttempts(user.id);
     }
     const { password, ...result } = user;

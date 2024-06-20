@@ -1,5 +1,6 @@
 import { IsOptional, IsEmail } from 'class-validator';
 import { CreateContactDto } from 'src/contacts/dto/create-contact.dto';
+import { SaleInfo } from '../entities/lead.entity';
 
 export class CreateLeadDto {
   @IsOptional()
@@ -35,4 +36,7 @@ export class CreateLeadDto {
 
   @IsOptional()
   leadContacts: CreateContactDto[];
+
+  @IsOptional()
+  saleInfo: SaleInfo;
 }

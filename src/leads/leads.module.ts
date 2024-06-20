@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { Module, forwardRef } from '@nestjs/common';
 import { LeadsService } from './leads.service';
 import { LeadsController } from './leads.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
@@ -11,10 +11,23 @@ import { LeadNotesModule } from './lead-notes/lead-notes.module';
 import { SaleNotesModule } from './sale-notes/sale-notes.module';
 import { StatesModule } from 'src/states/states.module';
 import { StatusesModule } from 'src/statuses/statuses.module';
+import { LeadContractsModule } from './lead-contracts/lead-contracts.module';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Lead]), LeadCallsModule, ContactsModule, LeadContactsModule, LeadCallbacksModule, LeadNotesModule, SaleNotesModule, StatesModule, StatusesModule],
+  imports: [
+    TypeOrmModule.forFeature([Lead]),
+    forwardRef(() => LeadCallsModule),
+    ContactsModule,
+    LeadContactsModule,
+    LeadCallbacksModule,
+    LeadNotesModule,
+    SaleNotesModule,
+    StatesModule,
+    StatusesModule,
+    LeadContractsModule,
+  ],
   controllers: [LeadsController],
   providers: [LeadsService],
+  exports: [LeadsService],
 })
 export class LeadsModule {}

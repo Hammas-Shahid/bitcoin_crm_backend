@@ -9,12 +9,24 @@ import { NotesService } from 'src/notes/notes.service';
 
 @Injectable()
 export class LeadNotesService {
-  
-  constructor(@InjectRepository(LeadNote) private leadNoteRepository: Repository<LeadNote>, private notesService: NotesService){}
-  
+  constructor(
+    @InjectRepository(LeadNote)
+    private leadNoteRepository: Repository<LeadNote>,
+    private notesService: NotesService,
+  ) {}
+
   async create(createLeadNoteDto: CreateLeadNoteDto, currentUser: User) {
-    const savedNote = await this.notesService.create({content: createLeadNoteDto.content}, currentUser);
-    return await this.leadNoteRepository.save({leadId: createLeadNoteDto.leadId, noteId: savedNote.id, created_by: currentUser.id})
+    const savedNote = await this.notesService.create(
+      { content: createLeadNoteDto.content },
+      currentUser,
+    );
+    console.log('here');
+
+    return await this.leadNoteRepository.save({
+      leadId: +createLeadNoteDto.leadId,
+      noteId: savedNote.id,
+      created_by: currentUser.id,
+    });
   }
 
   async findAll() {
