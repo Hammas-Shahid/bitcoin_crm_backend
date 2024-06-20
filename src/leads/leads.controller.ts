@@ -41,6 +41,22 @@ export class LeadsController {
     return this.leadsService.getPaginatedSales(body.pageIndex, body.limit);
   }
 
+  @Post('filtered-leads')
+  getFilteredLeads(
+    @Body()
+    body: {
+      leadFiltersDto: LeadFiltersDto;
+      pageIndex: number;
+      limit: number;
+    },
+  ) {
+    return this.leadsService.getFilteredLeads(
+      body.leadFiltersDto,
+      body.pageIndex,
+      body.limit,
+    );
+  }
+
   @Post('paginated-unassigned-leads')
   getPaginatedUnassignedLeads(
     @Body() body: { pageIndex: number; limit: number },
@@ -97,4 +113,17 @@ export class LeadsController {
   addressExists(@Body() body: { address: string }) {
     return this.leadsService.addressExists(body.address);
   }
+}
+
+export interface LeadFiltersDto {
+  businessName: string;
+  address: string;
+  city: string;
+  state: string;
+  email: string;
+  phoneNumber: string;
+  businessTypeId: number;
+  assigneeId: number;
+  statusId: number;
+  lastDisposition: number;
 }
