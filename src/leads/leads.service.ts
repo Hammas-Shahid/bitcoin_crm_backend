@@ -77,7 +77,9 @@ export class LeadsService {
         businessType: true,
         assignee: true,
         status: true,
-        leadContacts: true,
+        leadContacts: { contact: true },
+        leadCalls: { disposition: true, user: true, comment: true },
+        leadNotes: { note: { user: true } },
       },
     });
 
